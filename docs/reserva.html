@@ -8,6 +8,7 @@
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -212,6 +213,7 @@
     <i class="fab fa-whatsapp"></i>
 </a>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="js/calendar.js"></script>
 <script>
     function escapeHtml(str) {
@@ -309,6 +311,35 @@
         if (summary) summary.style.display = 'none';
         document.getElementById('bookingSuccess').style.display = 'block';
         window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        Swal.fire({
+            title: 'Reserva Confirmada',
+            html: '<div style="text-align:left;font-size:0.95rem;">' +
+                '<p>Tu reserva ha sido registrada exitosamente.</p>' +
+                '<div style="background:#f8f9fa;border-radius:10px;padding:16px;margin:12px 0;">' +
+                '<p><strong style="color:#1a5276;">Código:</strong> ' + bookingCode + '</p>' +
+                '<p><strong style="color:#1a5276;">Habitación:</strong> ' + roomName + '</p>' +
+                '<p><strong style="color:#1a5276;">Check-in:</strong> ' + d1.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) + '</p>' +
+                '<p><strong style="color:#1a5276;">Check-out:</strong> ' + d2.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) + '</p>' +
+                '<p><strong style="color:#1a5276;">Total:</strong> $' + total.toLocaleString() + '</p>' +
+                '</div>' +
+                '<p style="font-size:0.85rem;color:#718096;">Recibirás un correo de confirmación con los detalles.</p>' +
+                '</div>',
+            icon: 'success',
+            showCancelButton: true,
+            confirmButtonText: 'Nueva Reserva',
+            cancelButtonText: 'Volver al Inicio',
+            confirmButtonColor: '#1a5276',
+            cancelButtonColor: '#e67e22',
+            allowOutsideClick: false,
+            allowEscapeKey: false
+        }).then(function(result) {
+            if (result.isConfirmed) {
+                resetBooking();
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
     }
 
     function resetBooking() {
