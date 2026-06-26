@@ -1,11 +1,14 @@
 
 <div class="col-sm-9 offset-sm-3 col-lg-10 offset-lg-2 main">
+	<button class="btn btn-sm btn-outline-secondary d-md-none mb-3" onclick="document.querySelector('.sidebar').classList.toggle('show')">
+		<i class="fa fa-bars"></i> <?php _e('menu') ?>
+	</button>
 	<div class="row">
 		<ol class="breadcrumb">
-			<li><a href="#">
+			<li class="breadcrumb-item"><a href="index.php?dashboard">
 				<em class="fa fa-home"></em>
 			</a></li>
-			<li class="active"><?php _e('dashboard_title') ?></li>
+			<li class="breadcrumb-item active"><?php _e('dashboard_title') ?></li>
 		</ol>
 	</div>
 	
@@ -91,16 +94,16 @@
 
 			<div class="col-6 col-md-4 col-lg-4 no-padding">
 				<div class="panel panel-red panel-widget border-right">
-					<div class="row no-padding"><em class="fa fa-xl fa-money color-red"></em>
-						<div class="large">Rs.<?php include 'counters/income-count.php'?></div>
+				<div class="row no-padding"><em class="fa fa-xl fa-money color-red"></em>
+					<div class="large"><?php include 'counters/income-count.php'?></div>
 						<div class="text-muted"><?php _e('dashboard_total_income') ?></div>
 					</div>
 				</div>
 			</div>
 			<div class="col-6 col-md-4 col-lg-4 no-padding">
 				<div class="panel panel-orange panel-widget ">
-					<div class="row no-padding"><em class="fa fa-xl fa-credit-card color-purp"></em>
-						<div class="large">Rs.<?php include 'counters/pendingpayment.php'?></div>
+				<div class="row no-padding"><em class="fa fa-xl fa-credit-card color-purp"></em>
+					<div class="large"><?php include 'counters/pendingpayment.php'?></div>
 						<div class="text-muted"><?php _e('dashboard_pending_payments') ?></div>
 					</div>
 				</div>
