@@ -129,6 +129,17 @@
                     </div>
                     <button type="submit" class="btn btn-primary btn-lg btn-block">Confirmar Reserva</button>
                 </form>
+                <div id="bookingSuccess" style="display:none;" class="booking-success">
+                    <div style="text-align:center;padding:40px 20px;">
+                        <i class="fas fa-check-circle" style="font-size:4rem;color:var(--success);margin-bottom:16px;"></i>
+                        <h2 style="margin-bottom:8px;">Reserva Confirmada</h2>
+                        <p style="color:var(--text-light);margin-bottom:8px;">Tu reserva ha sido registrada exitosamente.</p>
+                        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:24px;">Recibirás un correo de confirmación con los detalles de tu estancia.</p>
+                        <div id="bookingDetails" style="background:#f8f9fa;border-radius:12px;padding:20px;text-align:left;margin-bottom:24px;"></div>
+                        <a href="index.html" class="btn btn-primary" style="margin-right:8px;"><i class="fas fa-home"></i> Volver al Inicio</a>
+                        <button onclick="resetBooking()" class="btn btn-outline"><i class="fas fa-plus"></i> Nueva Reserva</button>
+                    </div>
+                </div>
             </div>
             <div class="booking-info">
                 <div class="booking-info-card">
@@ -245,6 +256,51 @@
             navbar.style.boxShadow = '0 2px 10px rgba(0,0,0,0.08)';
         }
     });
+
+    document.querySelector('.booking-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var form = this;
+        var roomSelect = form.querySelector('select[name="room_type_id"]');
+        var checkIn = form.querySelector('input[name="check_in"]').value;
+        var checkOut = form.querySelector('input[name="check_out"]').value;
+        var name = form.querySelector('input[name="name"]').value;
+        var email = form.querySelector('input[name="email"]').value;
+
+        if (!roomSelect.value || !checkIn || !checkOut || !name || !email) {
+            alert('Por favor completa todos los campos obligatorios.');
+            return;
+        }
+
+        var roomText = roomSelect.options[roomSelect.selectedIndex].text;
+        var d1 = new Date(checkIn);
+        var d2 = new Date(checkOut);
+        var nights = Math.ceil((d2 - d1) / 86400000);
+        var priceMatch = roomText.match(/\$([\d,]+)/);
+        var price = priceMatch ? parseInt(priceMatch[1].replace(/,/g, '')) : 0;
+        var total = price * nights;
+
+        var details = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">' +
+            '<div><strong>Habitación:</strong><br>' + roomText.split(' - ')[0] + '</div>' +
+            '<div><strong>Huésped:</strong><br>' + name + '</div>' +
+            '<div><strong>Check-in:</strong><br>' + d1.toLocaleDateString('es-ES') + '</div>' +
+            '<div><strong>Check-out:</strong><br>' + d2.toLocaleDateString('es-ES') + '</div>' +
+            '<div><strong>Noches:</strong><br>' + nights + '</div>' +
+            '<div><strong>Total:</strong><br>$' + total.toLocaleString() + '</div>' +
+            '</div>';
+
+        document.getElementById('bookingDetails').innerHTML = details;
+        form.style.display = 'none';
+        document.getElementById('bookingSuccess').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    function resetBooking() {
+        var form = document.querySelector('.booking-form');
+        form.reset();
+        form.style.display = 'block';
+        document.getElementById('bookingSuccess').style.display = 'none';
+        if (hotelCalendar) hotelCalendar.clearSelection();
+    }
 </script>
 
 </body>
