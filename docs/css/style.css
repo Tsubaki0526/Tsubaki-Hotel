@@ -1243,3 +1243,16 @@ img { max-width: 100%; height: auto; }
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
+.calendar-warning {
+    background: #fff3cd;
+    border: 2px solid #ffc107;
+    border-radius: 12px;
+    padding: 14px 20px;
+    margin-top: 16px;
+    font-size: 0.9rem;
+    color: #856404;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.calendar-warning i { font-size: 1.2rem; }

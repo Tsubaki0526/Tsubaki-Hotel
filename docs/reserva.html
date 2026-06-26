@@ -264,31 +264,52 @@
         var checkOut = form.querySelector('input[name="check_out"]').value;
         var name = form.querySelector('input[name="name"]').value;
         var email = form.querySelector('input[name="email"]').value;
+        var phone = form.querySelector('input[name="contact_no"]').value;
 
-        if (!roomSelect.value || !checkIn || !checkOut || !name || !email) {
-            alert('Por favor completa todos los campos obligatorios.');
+        if (!roomSelect.value) { alert('Selecciona un tipo de habitación.'); return; }
+        if (!checkIn || !checkOut) { alert('Selecciona las fechas de check-in y check-out en el calendario.'); return; }
+        if (!name.trim()) { alert('Ingresa tu nombre.'); return; }
+        if (!email.trim()) { alert('Ingresa tu correo electrónico.'); return; }
+        if (!phone.trim()) { alert('Ingresa tu teléfono.'); return; }
+
+        var d1 = new Date(checkIn + 'T12:00:00');
+        var d2 = new Date(checkOut + 'T12:00:00');
+        if (d2 <= d1) { alert('La fecha de check-out debe ser posterior al check-in.'); return; }
+
+        var nights = Math.ceil((d2 - d1) / 86400000);
+        if (nights > 30) { alert('La estadía máxima es de 30 noches.'); return; }
+
+        if (hotelCalendar && hotelCalendar.isCurrentlyBooked()) {
+            alert('Las fechas seleccionadas ya están reservadas para esta habitación. Por favor elige otras fechas.');
             return;
         }
 
         var roomText = roomSelect.options[roomSelect.selectedIndex].text;
-        var d1 = new Date(checkIn + 'T12:00:00');
-        var d2 = new Date(checkOut + 'T12:00:00');
-        var nights = Math.ceil((d2 - d1) / 86400000);
+        var roomName = roomText.split(' - ')[0];
         var priceMatch = roomText.match(/\$([\d,]+)/);
         var price = priceMatch ? parseInt(priceMatch[1].replace(/,/g, '')) : 0;
         var total = price * nights;
+        var bookingCode = 'HP-' + Math.random().toString(36).substr(2, 8).toUpperCase();
 
-        var details = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">' +
-            '<div><strong>Habitación:</strong><br>' + roomText.split(' - ')[0] + '</div>' +
-            '<div><strong>Huésped:</strong><br>' + name + '</div>' +
-            '<div><strong>Check-in:</strong><br>' + d1.toLocaleDateString('es-ES') + '</div>' +
-            '<div><strong>Check-out:</strong><br>' + d2.toLocaleDateString('es-ES') + '</div>' +
-            '<div><strong>Noches:</strong><br>' + nights + '</div>' +
-            '<div><strong>Total:</strong><br>$' + total.toLocaleString() + '</div>' +
+        if (hotelCalendar) {
+            hotelCalendar.addBooking(parseInt(roomSelect.value), d1, d2);
+        }
+
+        var details = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;text-align:left;">' +
+            '<div><strong style="color:var(--primary);">Código:</strong><br><span style="font-size:1.1rem;">' + bookingCode + '</span></div>' +
+            '<div><strong style="color:var(--primary);">Habitación:</strong><br>' + roomName + '</div>' +
+            '<div><strong style="color:var(--primary);">Huésped:</strong><br>' + name + '</div>' +
+            '<div><strong style="color:var(--primary);">Email:</strong><br>' + email + '</div>' +
+            '<div><strong style="color:var(--primary);">Check-in:</strong><br>' + d1.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) + ' a las 2:00 PM</div>' +
+            '<div><strong style="color:var(--primary);">Check-out:</strong><br>' + d2.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) + ' a las 12:00 PM</div>' +
+            '<div><strong style="color:var(--primary);">Noches:</strong><br>' + nights + '</div>' +
+            '<div><strong style="color:var(--primary);">Total a pagar:</strong><br><span style="font-size:1.2rem;font-weight:800;">$' + total.toLocaleString() + '</span></div>' +
             '</div>';
 
         document.getElementById('bookingDetails').innerHTML = details;
         form.style.display = 'none';
+        var summary = document.getElementById('bookingSummary');
+        if (summary) summary.style.display = 'none';
         document.getElementById('bookingSuccess').style.display = 'block';
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }

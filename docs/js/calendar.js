@@ -1,15 +1,13 @@
 /**
  * Hotel Calendar Component
- * Muestra disponibilidad de habitaciones por fecha
- * Versión estática para GitHub Pages (datos demo)
+ * Disponibilidad real con reservas demo
  */
 
 class HotelCalendar {
     constructor(containerId, options = {}) {
         this.container = document.getElementById(containerId);
-        this.currentDate = new Date();
-        this.currentMonth = this.currentDate.getMonth();
-        this.currentYear = this.currentDate.getFullYear();
+        this.currentMonth = new Date().getMonth();
+        this.currentYear = new Date().getFullYear();
         this.checkIn = null;
         this.checkOut = null;
         this.selectedRoomType = null;
@@ -27,44 +25,57 @@ class HotelCalendar {
             { id: 10, name: 'Murphy Room', price: 6900, total: 2 }
         ];
 
-        this.monthNames = [
-            'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+        // Reservas demo pre-existentes
+        const today = new Date();
+        const y = today.getFullYear();
+        const m = today.getMonth();
+        this.bookings = [
+            { roomTypeId: 1, checkIn: new Date(y, m, 10), checkOut: new Date(y, m, 14) },
+            { roomTypeId: 1, checkIn: new Date(y, m, 20), checkOut: new Date(y, m, 23) },
+            { roomTypeId: 2, checkIn: new Date(y, m, 8),  checkOut: new Date(y, m, 12) },
+            { roomTypeId: 2, checkIn: new Date(y, m, 15), checkOut: new Date(y, m, 18) },
+            { roomTypeId: 2, checkIn: new Date(y, m + 1, 5), checkOut: new Date(y, m + 1, 10) },
+            { roomTypeId: 3, checkIn: new Date(y, m, 12), checkOut: new Date(y, m, 16) },
+            { roomTypeId: 5, checkIn: new Date(y, m, 1),  checkOut: new Date(y, m, 5) },
+            { roomTypeId: 5, checkIn: new Date(y, m, 22), checkOut: new Date(y, m, 28) },
+            { roomTypeId: 5, checkIn: new Date(y, m + 1, 10), checkOut: new Date(y, m + 1, 15) },
+            { roomTypeId: 7, checkIn: new Date(y, m, 18), checkOut: new Date(y, m, 22) },
+            { roomTypeId: 9, checkIn: new Date(y, m, 5),  checkOut: new Date(y, m, 12) },
+            { roomTypeId: 9, checkIn: new Date(y, m + 1, 1), checkOut: new Date(y, m + 1, 8) },
+            { roomTypeId: 10, checkIn: new Date(y, m, 14), checkOut: new Date(y, m, 17) },
         ];
-        this.dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 
+        this.monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+        this.dayNames = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
         this.onDateSelect = options.onDateSelect || null;
-        this.onRoomSelect = options.onRoomSelect || null;
-
-        this._generateAvailability();
         this.render();
     }
 
-    _generateAvailability() {
-        this.availability = {};
-        const today = new Date();
-        this.roomTypes.forEach(room => {
-            this.availability[room.id] = {};
-            for (let d = new Date(today); d <= new Date(today.getFullYear(), today.getMonth() + 3, 0); d.setDate(d.getDate() + 1)) {
-                const key = this._dateKey(d);
-                const random = Math.random();
-                const booked = random < 0.25;
-                this.availability[room.id][key] = {
-                    available: room.total - (booked ? Math.ceil(Math.random() * room.total * 0.5) : 0),
-                    total: room.total
-                };
-            }
-        });
-    }
-
     _dateKey(date) {
-        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
     }
 
     _isPast(date) {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        const today = new Date(); today.setHours(0,0,0,0);
         return date < today;
+    }
+
+    _isBooked(roomTypeId, date) {
+        const key = this._dateKey(date);
+        return this.bookings.some(b =>
+            b.roomTypeId === roomTypeId &&
+            this._dateKey(b.checkIn) <= key &&
+            key < this._dateKey(b.checkOut)
+        );
+    }
+
+    _countBooked(roomTypeId, date) {
+        const key = this._dateKey(date);
+        return this.bookings.filter(b =>
+            b.roomTypeId === roomTypeId &&
+            this._dateKey(b.checkIn) <= key &&
+            key < this._dateKey(b.checkOut)
+        ).length;
     }
 
     _isSelected(date) {
@@ -75,16 +86,32 @@ class HotelCalendar {
         return false;
     }
 
+    _hasBookedInRange(roomTypeId, start, end) {
+        for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
+            if (this._isBooked(roomTypeId, d)) return true;
+        }
+        return false;
+    }
+
     _getStatus(date) {
         if (this._isPast(date)) return 'past';
-        if (this._isSelected(date)) return this._isSelected(date);
+        const sel = this._isSelected(date);
+        if (sel) return sel;
         if (!this.selectedRoomType) return 'neutral';
-        const key = this._dateKey(date);
-        const avail = this.availability[this.selectedRoomType]?.[key];
-        if (!avail) return 'neutral';
-        if (avail.available <= 0) return 'unavailable';
-        if (avail.available <= 2) return 'limited';
+        const room = this.roomTypes.find(r => r.id === this.selectedRoomType);
+        if (!room) return 'neutral';
+        const booked = this._countBooked(this.selectedRoomType, date);
+        const avail = room.total - booked;
+        if (avail <= 0) return 'unavailable';
+        if (avail <= 1) return 'limited';
         return 'available';
+    }
+
+    _getAvail(roomTypeId, date) {
+        const room = this.roomTypes.find(r => r.id === roomTypeId);
+        if (!room) return null;
+        const booked = this._countBooked(roomTypeId, date);
+        return { available: room.total - booked, total: room.total };
     }
 
     render() {
@@ -94,8 +121,8 @@ class HotelCalendar {
         html += `<div class="calendar-room-selector">
             <label><i class="fas fa-bed"></i> Selecciona habitación para ver disponibilidad:</label>
             <select id="calendarRoomSelect" class="calendar-room-select">
-                <option value="">Ver todas las habitaciones</option>
-                ${this.roomTypes.map(r => `<option value="${r.id}" ${this.selectedRoomType == r.id ? 'selected' : ''}>${r.name} - $${r.price.toLocaleString()}/noche</option>`).join('')}
+                <option value="">-- Selecciona una habitación --</option>
+                ${this.roomTypes.map(r => `<option value="${r.id}" ${this.selectedRoomType==r.id?'selected':''}>${r.name} - $${r.price.toLocaleString()}/noche</option>`).join('')}
             </select>
         </div>`;
 
@@ -105,21 +132,32 @@ class HotelCalendar {
 
         html += `<div class="calendar-legend">
             <div class="legend-item"><span class="legend-dot available"></span> Disponible</div>
-            <div class="legend-item"><span class="legend-dot limited"></span> Últimas habitaciones</div>
-            <div class="legend-item"><span class="legend-dot unavailable"></span> No disponible</div>
+            <div class="legend-item"><span class="legend-dot limited"></span> Última disponible</div>
+            <div class="legend-item"><span class="legend-dot unavailable"></span> Ocupada</div>
             <div class="legend-item"><span class="legend-dot checkin"></span> Check-in</div>
             <div class="legend-item"><span class="legend-dot checkout"></span> Check-out</div>
+            <div class="legend-item"><span class="legend-dot range"></span> Estancia</div>
         </div>`;
 
         if (this.checkIn) {
             html += `<div class="calendar-selection">
                 <div class="selection-info">
-                    <span><i class="fas fa-calendar-check"></i> <strong>Check-in:</strong> ${this.checkIn.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
-                    ${this.checkOut ? `<span><i class="fas fa-calendar-minus"></i> <strong>Check-out:</strong> ${this.checkOut.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>` : ''}
-                    ${this.checkIn && this.checkOut ? `<span><i class="fas fa-moon"></i> <strong>${Math.ceil((this.checkOut - this.checkIn) / 86400000)} noche(s)</strong></span>` : ''}
+                    <span><i class="fas fa-calendar-check"></i> <strong>Check-in:</strong> ${this.checkIn.toLocaleDateString('es-ES',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</span>
+                    ${this.checkOut ? `<span><i class="fas fa-calendar-minus"></i> <strong>Check-out:</strong> ${this.checkOut.toLocaleDateString('es-ES',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</span>` : ''}
+                    ${this.checkIn && this.checkOut ? `<span><i class="fas fa-moon"></i> <strong>${Math.ceil((this.checkOut-this.checkIn)/86400000)} noche(s)</strong></span>` : ''}
                 </div>
                 <button class="btn btn-sm btn-outline calendar-clear" onclick="hotelCalendar.clearSelection()"><i class="fas fa-times"></i> Limpiar</button>
             </div>`;
+        }
+
+        if (this.selectedRoomType && this.checkIn && this.checkOut) {
+            const overlap = this._hasBookedInRange(this.selectedRoomType, this.checkIn, this.checkOut);
+            if (overlap) {
+                html += `<div class="calendar-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>No disponible:</strong> Las fechas seleccionadas se solapan con una reserva existente. Por favor elige otras fechas.
+                </div>`;
+            }
         }
 
         html += `</div>`;
@@ -129,6 +167,9 @@ class HotelCalendar {
         if (select) {
             select.addEventListener('change', (e) => {
                 this.selectedRoomType = e.target.value ? parseInt(e.target.value) : null;
+                this.checkIn = null;
+                this.checkOut = null;
+                this._syncFormDates();
                 this.render();
             });
         }
@@ -156,27 +197,23 @@ class HotelCalendar {
             <span class="cal-title">${this.monthNames[month]} ${year}</span>
             <button class="cal-nav" onclick="hotelCalendar.nextMonth()"><i class="fas fa-chevron-right"></i></button>
         </div>`;
-
         html += `<div class="calendar-grid">`;
         this.dayNames.forEach(d => { html += `<div class="calendar-dayname">${d}</div>`; });
 
         const firstDay = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-        for (let i = 0; i < firstDay; i++) {
-            html += `<div class="calendar-day empty"></div>`;
-        }
+        for (let i = 0; i < firstDay; i++) html += `<div class="calendar-day empty"></div>`;
 
         for (let day = 1; day <= daysInMonth; day++) {
             const date = new Date(year, month, day);
             const status = this._getStatus(date);
             const key = this._dateKey(date);
-            const avail = this.selectedRoomType ? this.availability[this.selectedRoomType]?.[key] : null;
+            const avail = this.selectedRoomType ? this._getAvail(this.selectedRoomType, date) : null;
 
             let tooltip = '';
-            if (status === 'available') tooltip = `${avail.available} de ${avail.total} disponibles`;
-            else if (status === 'limited') tooltip = `¡Solo ${avail.available} disponible(s)!`;
-            else if (status === 'unavailable') tooltip = 'Sin disponibilidad';
+            if (status === 'available' && avail) tooltip = `${avail.available} de ${avail.total} disponibles`;
+            else if (status === 'limited' && avail) tooltip = `¡Solo ${avail.available} disponible(s)!`;
+            else if (status === 'unavailable') tooltip = 'Ocupada - No disponible';
 
             html += `<div class="calendar-day ${status}" data-date="${key}" ${tooltip ? `title="${tooltip}"` : ''}>`;
             html += `<span class="day-number">${day}</span>`;
@@ -185,7 +222,6 @@ class HotelCalendar {
             }
             html += `</div>`;
         }
-
         html += `</div></div>`;
         return html;
     }
@@ -195,29 +231,48 @@ class HotelCalendar {
         const [y, m, d] = dateStr.split('-').map(Number);
         const date = new Date(y, m - 1, d);
 
+        if (!this.selectedRoomType) {
+            alert('Primero selecciona un tipo de habitación.');
+            return;
+        }
+
         if (!this.checkIn || (this.checkIn && this.checkOut)) {
             this.checkIn = date;
             this.checkOut = null;
-        } else if (date > this.checkIn) {
-            this.checkOut = date;
-        } else {
+        } else if (date <= this.checkIn) {
             this.checkIn = date;
             this.checkOut = null;
+        } else {
+            if (this._hasBookedInRange(this.selectedRoomType, this.checkIn, date)) {
+                alert('Las fechas seleccionadas se solapan con una reserva existente. Por favor elige otras fechas.');
+                return;
+            }
+            this.checkOut = date;
         }
 
         this.render();
         this._syncFormDates();
-
-        if (this.onDateSelect) {
-            this.onDateSelect(this.checkIn, this.checkOut);
-        }
+        if (this.onDateSelect) this.onDateSelect(this.checkIn, this.checkOut);
     }
 
     _syncFormDates() {
-        const ciInput = document.querySelector('input[name="check_in"]');
-        const coInput = document.querySelector('input[name="check_out"]');
-        if (ciInput && this.checkIn) ciInput.value = this._dateKey(this.checkIn);
-        if (coInput && this.checkOut) coInput.value = this._dateKey(this.checkOut);
+        const ci = document.querySelector('input[name="check_in"]');
+        const co = document.querySelector('input[name="check_out"]');
+        if (ci) ci.value = this.checkIn ? this._dateKey(this.checkIn) : '';
+        if (co) co.value = this.checkOut ? this._dateKey(this.checkOut) : '';
+    }
+
+    addBooking(roomTypeId, checkIn, checkOut) {
+        this.bookings.push({ roomTypeId, checkIn, checkOut });
+        this.checkIn = null;
+        this.checkOut = null;
+        this._syncFormDates();
+        this.render();
+    }
+
+    isCurrentlyBooked() {
+        if (!this.selectedRoomType || !this.checkIn || !this.checkOut) return false;
+        return this._hasBookedInRange(this.selectedRoomType, this.checkIn, this.checkOut);
     }
 
     clearSelection() {
@@ -241,29 +296,30 @@ class HotelCalendar {
 }
 
 let hotelCalendar;
-document.addEventListener('DOMContentLoaded', function () {
-    const calContainer = document.getElementById('hotelCalendar');
-    if (calContainer) {
+document.addEventListener('DOMContentLoaded', function() {
+    const cal = document.getElementById('hotelCalendar');
+    if (cal) {
         hotelCalendar = new HotelCalendar('hotelCalendar', {
-            onDateSelect: function (checkIn, checkOut) {
-                const roomSelect = document.querySelector('select[name="room_type_id"]');
-                if (roomSelect && roomSelect.value && checkIn && checkOut && hotelCalendar.selectedRoomType) {
+            onDateSelect: function(ci, co) {
+                if (ci && co && hotelCalendar.selectedRoomType) {
                     const room = hotelCalendar.roomTypes.find(r => r.id == hotelCalendar.selectedRoomType);
                     if (room) {
-                        const nights = Math.ceil((checkOut - checkIn) / 86400000);
-                        const total = room.price * nights;
-                        updateBookingSummary(room.name, nights, room.price, total);
+                        const nights = Math.ceil((co - ci) / 86400000);
+                        updateBookingSummary(room.name, nights, room.price, room.price * nights);
                     }
                 }
             }
         });
     }
 
-    const roomSelect = document.querySelector('select[name="room_type_id"]');
-    if (roomSelect) {
-        roomSelect.addEventListener('change', function () {
+    const roomSel = document.querySelector('select[name="room_type_id"]');
+    if (roomSel) {
+        roomSel.addEventListener('change', function() {
             if (hotelCalendar) {
                 hotelCalendar.selectedRoomType = this.value ? parseInt(this.value) : null;
+                hotelCalendar.checkIn = null;
+                hotelCalendar.checkOut = null;
+                hotelCalendar._syncFormDates();
                 hotelCalendar.render();
             }
         });
@@ -271,15 +327,15 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function updateBookingSummary(roomName, nights, pricePerNight, total) {
-    let summary = document.getElementById('bookingSummary');
-    if (!summary) {
-        summary = document.createElement('div');
-        summary.id = 'bookingSummary';
-        summary.className = 'booking-summary-card';
+    let s = document.getElementById('bookingSummary');
+    if (!s) {
+        s = document.createElement('div');
+        s.id = 'bookingSummary';
+        s.className = 'booking-summary-card';
         const form = document.querySelector('.booking-form');
-        if (form) form.parentNode.insertBefore(summary, form.nextSibling);
+        if (form) form.parentNode.insertBefore(s, form);
     }
-    summary.innerHTML = `
+    s.innerHTML = `
         <h4><i class="fas fa-receipt"></i> Resumen de Reserva</h4>
         <div class="summary-row"><span>Habitación:</span><strong>${roomName}</strong></div>
         <div class="summary-row"><span>Noches:</span><strong>${nights}</strong></div>
