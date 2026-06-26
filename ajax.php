@@ -593,6 +593,20 @@ function uploadImage($field_name) {
     if (!in_array($ext, $allowed)) {
         return false;
     }
+    if ($file['size'] > 5 * 1024 * 1024) {
+        return false;
+    }
+    $image = @getimagesize($file['tmp_name']);
+    if ($image === false) {
+        return false;
+    }
+    $allowed_mimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    $mime = finfo_file($finfo, $file['tmp_name']);
+    finfo_close($finfo);
+    if (!in_array($mime, $allowed_mimes)) {
+        return false;
+    }
     $filename = uniqid('img_') . '.' . $ext;
     $dest = __DIR__ . '/uploads/' . $filename;
     if (move_uploaded_file($file['tmp_name'], $dest)) {

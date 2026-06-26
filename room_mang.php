@@ -1,4 +1,4 @@
-<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+<div class="col-sm-9 offset-sm-3 col-lg-10 offset-lg-2 main">
     <div class="row">
         <ol class="breadcrumb">
             <li><a href="#">
@@ -64,7 +64,7 @@
                                             echo '<a href="#" class="btn btn-danger" style="border-radius:60px;">' . __('room_booked') . '</a>';
                                         }
                                         ?>
-
+                                    </td>
 
                                     <td>
                                         <?php
@@ -97,7 +97,7 @@
                                         }
                                         ?>
 
-                                        <a href="ajax.php?delete_room=<?php echo $rooms['room_id']; ?>"
+                                        <a href="ajax.php?delete_room=<?php echo $rooms['room_id']; ?>&csrf=<?php echo csrf_token(); ?>"
                                            class="btn btn-danger" style="border-radius:60px;" onclick="return confirm('<?php _e('confirm_delete') ?>')"><i
                                                      class="fa fa-trash" alt="<?php _e('delete') ?>"></i></a>
                                         <?php if (!empty($rooms['active_booking_id'])): ?>

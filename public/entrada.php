@@ -30,7 +30,7 @@ include 'includes/header.php';
             </div>
             <div class="blog-post-content">
                 <p class="blog-intro"><?php echo nl2br(htmlspecialchars($post['excerpt'])); ?></p>
-                <?php echo $post['content']; ?>
+                <?php echo strip_tags($post['content'], '<p><br><h1><h2><h3><h4><h5><h6><strong><b><i><em><u><a><img><ul><ol><li><blockquote><pre><code><table><thead><tbody><tr><th><td><div><span><hr><br><figure><figcaption>'); ?>
             </div>
             <div class="blog-post-nav">
                 <a href="blog.php" class="btn btn-outline"><i class="fas fa-arrow-left"></i> <?php _e('public_back_home') ?></a>

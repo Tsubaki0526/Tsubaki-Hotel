@@ -53,7 +53,7 @@
                                        data-color="<?php echo $p['color']; ?>"
                                        data-color2="<?php echo $p['color2']; ?>"
                                        id="editBlogBtn"><i class="fa fa-pencil"></i></a>
-                                    <a href="ajax.php?delete_blog=<?php echo $p['id']; ?>" class="btn btn-danger" style="border-radius:60px;" onclick="return confirm('<?php _e('confirm_delete'); ?>')"><i class="fa fa-trash"></i></a>
+                                    <a href="ajax.php?delete_blog=<?php echo $p['id']; ?>&csrf=<?php echo csrf_token(); ?>" class="btn btn-danger" style="border-radius:60px;" onclick="return confirm('<?php _e('confirm_delete'); ?>')"><i class="fa fa-trash"></i></a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

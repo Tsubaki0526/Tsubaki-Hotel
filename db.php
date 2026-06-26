@@ -9,6 +9,12 @@ ini_set('log_errors', 1);
 ini_set('error_log', __DIR__ . '/logs/php_errors.log');
 error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
 
+// Session security
+ini_set('session.cookie_httponly', 1);
+ini_set('session.cookie_samesite', 'Lax');
+ini_set('session.use_only_cookies', 1);
+ini_set('session.use_strict_mode', 1);
+
 // === CSRF Protection ===
 function csrf_token() {
     if (empty($_SESSION['csrf_token'])) {
@@ -22,7 +28,8 @@ function verify_csrf($token) {
 }
 
 function require_csrf() {
-    if (!verify_csrf($_POST['csrf_token'] ?? '')) {
+    $token = $_POST['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+    if (!verify_csrf($token)) {
         header('Location:login.php?error=csrf');
         exit;
     }

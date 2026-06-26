@@ -410,7 +410,7 @@
                                             <td><?php echo htmlspecialchars($ba['document_number']); ?></td>
                                             <td><?php echo $ba['is_active'] ? '<i class="fa fa-check text-success"></i>' : '<i class="fa fa-times text-danger"></i>'; ?></td>
                                             <td>
-                                                <a href="ajax.php?delete_bank=<?php echo $ba['id']; ?>" class="btn btn-danger btn-sm" style="border-radius:60px;" onclick="return confirm('<?php _e('confirm_delete'); ?>')"><i class="fa fa-trash"></i></a>
+                                                <a href="ajax.php?delete_bank=<?php echo $ba['id']; ?>&csrf=<?php echo csrf_token(); ?>" class="btn btn-danger btn-sm" style="border-radius:60px;" onclick="return confirm('<?php _e('confirm_delete'); ?>')"><i class="fa fa-trash"></i></a>
                                             </td>
                                         </tr>
                                     <?php endwhile; ?>

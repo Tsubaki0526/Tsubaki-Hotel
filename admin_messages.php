@@ -40,7 +40,7 @@
                                        data-msg="<?php echo htmlspecialchars($m['message']); ?>"
                                        data-date="<?php echo date('d/m/Y H:i', strtotime($m['created_at'])); ?>"
                                        id="viewMsgBtn"><i class="fa fa-eye"></i></a>
-                                    <a href="ajax.php?delete_message=<?php echo $m['id']; ?>" class="btn btn-danger" style="border-radius:60px;" onclick="return confirm('<?php _e('confirm_delete'); ?>')"><i class="fa fa-trash"></i></a>
+                                    <a href="ajax.php?delete_message=<?php echo $m['id']; ?>&csrf=<?php echo csrf_token(); ?>" class="btn btn-danger" style="border-radius:60px;" onclick="return confirm('<?php _e('confirm_delete'); ?>')"><i class="fa fa-trash"></i></a>
                                 </td>
                             </tr>
                         <?php endwhile; ?>

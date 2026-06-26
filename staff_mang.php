@@ -1,4 +1,4 @@
-<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+<div class="col-sm-9 offset-sm-3 col-lg-10 offset-lg-2 main">
     <div class="row">
         <ol class="breadcrumb">
             <li><a href="#">
@@ -123,6 +123,7 @@ if (mysqli_num_rows($staff_result) > 0) {
                                     <div class="panel-body">
                                         <form data-toggle="validator" role="form" action="functionmis.php"
                                               method="post">
+                                            <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
                                             <div class="row">
                                                 <div class="form-group col-lg-6">
                                                     <label><?php _e('staff_position') ?></label>

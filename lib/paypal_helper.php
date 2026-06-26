@@ -16,12 +16,8 @@ function paypalBaseUrl() {
 
 function paypalGetAccessToken() {
     global $connection;
-    $q = mysqli_query($connection, "SELECT key_value FROM site_settings WHERE key_name IN ('paypal_client_id','paypal_secret')");
+    $qr = mysqli_query($connection, "SELECT key_name, key_value FROM site_settings WHERE key_name IN ('paypal_client_id','paypal_secret')");
     $creds = [];
-    while ($r = mysqli_fetch_assoc($q)) $creds[] = $r;
-    mysqli_data_seek($q, 0);
-    $creds = [];
-    $qr = mysqli_query($connection, "SELECT * FROM site_settings WHERE key_name IN ('paypal_client_id','paypal_secret')");
     while ($r = mysqli_fetch_assoc($qr)) $creds[$r['key_name']] = $r['key_value'];
     $client_id = $creds['paypal_client_id'] ?? '';
     $secret = decrypt_value($creds['paypal_secret'] ?? '');

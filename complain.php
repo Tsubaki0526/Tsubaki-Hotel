@@ -1,4 +1,4 @@
-<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+<div class="col-sm-9 offset-sm-3 col-lg-10 offset-lg-2 main">
     <div class="row">
         <ol class="breadcrumb">
             <li><a href="#">
@@ -103,7 +103,7 @@
                                     <td><?php echo date('M j, Y',strtotime($complaint['created_at'])) ?></td>
                                     <td>
                                         <?php if(!$complaint['resolve_status']){
-                                            echo '<button class="btn btn-info" data-bs-toggle="modal" style="border-radius:60px;" data-bs-target="#complaintModal" data-id="' . $complaint['id'] . '" id="complaint">' . __('complaint_resolve') . '</a>';
+                                            echo '<button class="btn btn-info" data-bs-toggle="modal" style="border-radius:60px;" data-bs-target="#complaintModal" data-id="' . $complaint['id'] . '" id="complaint">' . __('complaint_resolve') . '</button>';
                                         } else{
                                             echo date('M j, Y',strtotime($complaint['resolve_date']));
                                         }

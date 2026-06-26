@@ -9,6 +9,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 if (isset($_POST['submit'])) {
+    require_csrf();
     $emp_id = $_POST['emp_id'];
     $first_name = trim($_POST['first_name']);
     $last_name = trim($_POST['last_name']);
@@ -33,6 +34,11 @@ if (isset($_POST['submit'])) {
 }
 
 if (isset($_GET['empid'])) {
+    if (!isset($_SESSION['user_id'])) {
+        header('Location:login.php');
+        exit;
+    }
+    require_csrf();
     $emp_id = $_GET['empid'];
     $stmt = mysqli_prepare($connection, "DELETE FROM staff WHERE emp_id=?");
     mysqli_stmt_bind_param($stmt, "i", $emp_id);

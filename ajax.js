@@ -1,3 +1,15 @@
+// CSRF token global para todas las peticiones AJAX
+$(document).ready(function() {
+    $.ajaxSetup({
+        beforeSend: function(xhr) {
+            var token = $('meta[name="csrf-token"]').attr('content');
+            if (token) {
+                xhr.setRequestHeader('X-CSRF-Token', token);
+            }
+        }
+    });
+});
+
 $('#addRoom').submit(function () {
     var room_type_id = $('#room_type_id').val();
     var room_no = $('#room_no').val();

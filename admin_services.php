@@ -38,7 +38,7 @@
                                        data-desc="<?php echo htmlspecialchars($s['description']); ?>"
                                        data-icon="<?php echo htmlspecialchars($s['icon']); ?>"
                                        id="editSrvBtn"><i class="fa fa-pencil"></i></a>
-                                    <a href="ajax.php?delete_service=<?php echo $s['id']; ?>" class="btn btn-danger" style="border-radius:60px;" onclick="return confirm('<?php _e('confirm_delete'); ?>')"><i class="fa fa-trash"></i></a>
+                                    <a href="ajax.php?delete_service=<?php echo $s['id']; ?>&csrf=<?php echo csrf_token(); ?>" class="btn btn-danger" style="border-radius:60px;" onclick="return confirm('<?php _e('confirm_delete'); ?>')"><i class="fa fa-trash"></i></a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

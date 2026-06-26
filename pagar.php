@@ -1,5 +1,4 @@
 <?php
-session_start();
 require_once 'db.php';
 require_once 'public/includes/config.php';
 require_once 'lib/stripe_helper.php';

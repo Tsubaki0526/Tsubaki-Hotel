@@ -5,7 +5,7 @@
             <img src="img/user.png" alt="">
         </div>
         <div class="sidebar-user">
-            <strong><?php echo htmlspecialchars($user['name']);?></strong>
+            <strong><?php echo htmlspecialchars($user['username']);?></strong>
             <small><span class="online-dot"></span> <?php _e('admin_label') ?></small>
         </div>
     </div>

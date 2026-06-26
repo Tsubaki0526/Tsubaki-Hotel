@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once __DIR__ . '/lang/lang_helper.php';
+require_once __DIR__ . '/db.php';
 lang_init();
 ?>
 <html>
