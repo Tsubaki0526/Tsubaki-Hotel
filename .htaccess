@@ -4,7 +4,15 @@ DirectoryIndex index.php
 # Proteger archivos sensibles
 <FilesMatch "\.(sql|md|txt|log|env|php~|bak)$">
   Require all denied
-</FilesMatch>
+</Files>
+
+# Proteger archivos de configuración
+<Files "env.php">
+  Require all denied
+</Files>
+<Files "db.php">
+  Require all denied
+</Files>
 
 # Redirección HTTPS (activar solo cuando tengas SSL activo)
 #<IfModule mod_rewrite.c>

@@ -18,7 +18,7 @@ if (isset($_POST['submit'])) {
     $id_card_no = $_POST['id_card_no'];
     $address = $_POST['address'];
     $contact_no = $_POST['contact_no'];
-    $joining_date = strtotime($_POST['joining_date']);
+    $joining_date = date('Y-m-d', strtotime($_POST['joining_date']));
     $salary = $_POST['salary'];
 
     $stmt = mysqli_prepare($connection, "UPDATE staff SET emp_name=?, staff_type_id=?, shift_id=?, id_card_type=?, id_card_no=?, address=?, contact_no=?, joining_date=?, salary=? WHERE emp_id=?");

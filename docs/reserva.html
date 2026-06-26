@@ -170,6 +170,7 @@
                     <li><a href="habitaciones.html">Habitaciones</a></li>
                     <li><a href="servicios.html">Servicios</a></li>
                     <li><a href="blog.html">Blog</a></li>
+                    <li><a href="nosotros.html">Nosotros</a></li>
                     <li><a href="contacto.html">Contacto</a></li>
                 </ul>
             </div>
@@ -181,6 +182,11 @@
                     <li><a href="habitaciones.html#triple">Triple</a></li>
                     <li><a href="habitaciones.html#family">Family</a></li>
                     <li><a href="habitaciones.html#king">King Sized</a></li>
+                    <li><a href="habitaciones.html#master">Master Suite</a></li>
+                    <li><a href="habitaciones.html#mini">Mini-Suite</a></li>
+                    <li><a href="habitaciones.html#connecting">Connecting Rooms</a></li>
+                    <li><a href="habitaciones.html#presidential">Presidential Suite</a></li>
+                    <li><a href="habitaciones.html#murphy">Murphy Room</a></li>
                 </ul>
             </div>
             <div class="footer-col">
@@ -208,6 +214,12 @@
 
 <script src="js/calendar.js"></script>
 <script>
+    function escapeHtml(str) {
+        var div = document.createElement('div');
+        div.appendChild(document.createTextNode(str));
+        return div.innerHTML;
+    }
+
     const menuToggle = document.getElementById('menuToggle');
     const navMenu = document.getElementById('navMenu');
 
@@ -278,11 +290,13 @@
             hotelCalendar.addBooking(parseInt(roomTypeId), d1, d2);
         }
 
+        var safeName = escapeHtml(name);
+        var safeEmail = escapeHtml(email);
         var details = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;text-align:left;">' +
             '<div><strong style="color:var(--primary);">Código:</strong><br><span style="font-size:1.1rem;">' + bookingCode + '</span></div>' +
             '<div><strong style="color:var(--primary);">Habitación:</strong><br>' + roomName + '</div>' +
-            '<div><strong style="color:var(--primary);">Huésped:</strong><br>' + name + '</div>' +
-            '<div><strong style="color:var(--primary);">Email:</strong><br>' + email + '</div>' +
+            '<div><strong style="color:var(--primary);">Huésped:</strong><br>' + safeName + '</div>' +
+            '<div><strong style="color:var(--primary);">Email:</strong><br>' + safeEmail + '</div>' +
             '<div><strong style="color:var(--primary);">Check-in:</strong><br>' + d1.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) + ' a las 2:00 PM</div>' +
             '<div><strong style="color:var(--primary);">Check-out:</strong><br>' + d2.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) + ' a las 12:00 PM</div>' +
             '<div><strong style="color:var(--primary);">Noches:</strong><br>' + nights + '</div>' +

@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contacto - Hotel ParaÃ­so</title>
     <meta name="description" content="ContÃ¡ctanos para mÃ¡s informaciÃ³n o para hacer tu reserva.">
-    <link rel="icon" href="data:,">`n    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -109,7 +110,7 @@
             </div>
             <div class="contact-form">
                 <h2>EnvÃ­anos un Mensaje</h2>
-                <form action="#" method="POST">
+                <form action="#" method="POST" onsubmit="return false;">
                     <div class="form-group">
                         <input type="text" name="name" placeholder="Tu nombre completo" required>
                     </div>
@@ -122,7 +123,7 @@
                     <div class="form-group">
                         <textarea name="message" rows="5" placeholder="Tu mensaje" required></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block">Enviar Mensaje</button>
+                    <button type="button" class="btn btn-primary btn-block" onclick="submitContact(this)">Enviar Mensaje</button>
                 </form>
             </div>
         </div>
@@ -154,6 +155,7 @@
                     <li><a href="habitaciones.html">Habitaciones</a></li>
                     <li><a href="servicios.html">Servicios</a></li>
                     <li><a href="blog.html">Blog</a></li>
+                    <li><a href="nosotros.html">Nosotros</a></li>
                     <li><a href="contacto.html">Contacto</a></li>
                 </ul>
             </div>
@@ -165,6 +167,11 @@
                     <li><a href="habitaciones.html#triple">Triple</a></li>
                     <li><a href="habitaciones.html#family">Family</a></li>
                     <li><a href="habitaciones.html#king">King Sized</a></li>
+                    <li><a href="habitaciones.html#master">Master Suite</a></li>
+                    <li><a href="habitaciones.html#mini">Mini-Suite</a></li>
+                    <li><a href="habitaciones.html#connecting">Connecting Rooms</a></li>
+                    <li><a href="habitaciones.html#presidential">Presidential Suite</a></li>
+                    <li><a href="habitaciones.html#murphy">Murphy Room</a></li>
                 </ul>
             </div>
             <div class="footer-col">
@@ -223,6 +230,18 @@
             navbar.style.boxShadow = '0 2px 10px rgba(0,0,0,0.08)';
         }
     });
+
+    function submitContact(btn) {
+        var form = btn.closest('form');
+        var name = form.querySelector('input[name="name"]').value.trim();
+        var email = form.querySelector('input[name="email"]').value.trim();
+        var message = form.querySelector('textarea[name="message"]').value.trim();
+        if (!name) { alert('Ingresa tu nombre.'); return; }
+        if (!email) { alert('Ingresa tu correo electrónico.'); return; }
+        if (!message) { alert('Ingresa tu mensaje.'); return; }
+        alert('Mensaje enviado correctamente. Te responderemos pronto.');
+        form.reset();
+    }
 </script>
 
 </body>

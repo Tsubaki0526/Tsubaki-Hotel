@@ -36,10 +36,15 @@ class HotelCalendar {
             { roomTypeId: 2, checkIn: new Date(y, m, 15), checkOut: new Date(y, m, 18) },
             { roomTypeId: 2, checkIn: new Date(y, m + 1, 5), checkOut: new Date(y, m + 1, 10) },
             { roomTypeId: 3, checkIn: new Date(y, m, 12), checkOut: new Date(y, m, 16) },
+            { roomTypeId: 4, checkIn: new Date(y, m, 6),  checkOut: new Date(y, m, 9) },
+            { roomTypeId: 4, checkIn: new Date(y, m + 1, 12), checkOut: new Date(y, m + 1, 16) },
             { roomTypeId: 5, checkIn: new Date(y, m, 1),  checkOut: new Date(y, m, 5) },
             { roomTypeId: 5, checkIn: new Date(y, m, 22), checkOut: new Date(y, m, 28) },
             { roomTypeId: 5, checkIn: new Date(y, m + 1, 10), checkOut: new Date(y, m + 1, 15) },
+            { roomTypeId: 6, checkIn: new Date(y, m, 3),  checkOut: new Date(y, m, 7) },
             { roomTypeId: 7, checkIn: new Date(y, m, 18), checkOut: new Date(y, m, 22) },
+            { roomTypeId: 8, checkIn: new Date(y, m, 9),  checkOut: new Date(y, m, 13) },
+            { roomTypeId: 8, checkIn: new Date(y, m + 1, 8), checkOut: new Date(y, m + 1, 12) },
             { roomTypeId: 9, checkIn: new Date(y, m, 5),  checkOut: new Date(y, m, 12) },
             { roomTypeId: 9, checkIn: new Date(y, m + 1, 1), checkOut: new Date(y, m + 1, 8) },
             { roomTypeId: 10, checkIn: new Date(y, m, 14), checkOut: new Date(y, m, 17) },
@@ -170,7 +175,6 @@ class HotelCalendar {
                 this.checkIn = null;
                 this.checkOut = null;
                 this._syncFormDates();
-                this._syncHiddenField();
                 this.render();
             });
         }

@@ -157,7 +157,7 @@ if (isset($_POST['fetch_rooms_by_type'])) {
 
     echo "<option selected disabled>" . __('ajax_select_room') . "</option>";
     while ($room = mysqli_fetch_assoc($result)) {
-        echo "<option value='" . $room['room_id'] . "'>" . $room['room_no'] . "</option>";
+        echo "<option value='" . $room['room_id'] . "'>" . htmlspecialchars($room['room_no']) . "</option>";
     }
     exit;
 }

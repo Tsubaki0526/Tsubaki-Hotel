@@ -68,7 +68,7 @@
                                                 data-bs-target="#empDetail<?php echo htmlspecialchars($staff['emp_id']); ?>"
                                                 data-id="<?php echo htmlspecialchars($staff['emp_id']); ?>" id="editEmp"
                                                 class="btn btn-info" style="border-radius:60px;"><i class="fa fa-pencil"></i></button>
-                                        <a href='functionmis.php?empid=<?php echo htmlspecialchars($staff['emp_id']); ?>'
+                                        <a href='functionmis.php?empid=<?php echo htmlspecialchars($staff['emp_id']); ?>&csrf=<?php echo csrf_token(); ?>'
                                            class="btn btn-danger" onclick="return confirm('<?php _e('confirm_delete') ?>')" style="border-radius:60px;"><i
                                                      class="fa fa-trash"></i></a>
                                         <a href='index.php?emp_history&empid=<?php echo htmlspecialchars($staff['emp_id']); ?>'
