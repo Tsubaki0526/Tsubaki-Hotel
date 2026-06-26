@@ -1,0 +1,23 @@
+Options -Indexes
+DirectoryIndex index.php
+
+# Proteger archivos sensibles
+<FilesMatch "\.(sql|md|txt|log|env|php~|bak)$">
+  Require all denied
+</FilesMatch>
+
+# Redirección HTTPS (activar solo cuando tengas SSL activo)
+#<IfModule mod_rewrite.c>
+#RewriteEngine On
+#RewriteCond %{HTTPS} off
+#RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+#</IfModule>
+
+# Headers de seguridad
+<IfModule mod_headers.c>
+Header set X-Content-Type-Options "nosniff"
+Header set X-Frame-Options "DENY"
+Header set X-XSS-Protection "1; mode=block"
+Header set Referrer-Policy "strict-origin-when-cross-origin"
+Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+</IfModule>

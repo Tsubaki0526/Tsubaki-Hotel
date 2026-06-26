@@ -1,0 +1,43 @@
+<?php
+$slug = $_GET['slug'] ?? '';
+require_once 'includes/config.php';
+$post = getBlogPost($slug);
+
+if (!$post) {
+    header('Location: blog.php');
+    exit;
+}
+
+$page_title = htmlspecialchars($post['title']);
+include 'includes/header.php';
+?>
+
+<section class="page-hero" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1540281833537-f2e1a8d3b4b0?w=1600') center/cover;">
+    <div class="container">
+        <h1><?php echo htmlspecialchars($post['title']); ?></h1>
+        <p><i class="far fa-calendar-alt"></i> <?php echo date('d M Y', strtotime($post['created_at'])); ?></p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="blog-post">
+            <div class="blog-post-meta">
+                <span><i class="far fa-calendar-alt"></i> <?php _e('public_blog') ?>: <?php echo date('d M Y', strtotime($post['created_at'])); ?></span>
+                <?php if ($post['updated_at']): ?>
+                <span><i class="far fa-edit"></i> <?php _e('public_blog') ?>: <?php echo date('d M Y', strtotime($post['updated_at'])); ?></span>
+                <?php endif; ?>
+            </div>
+            <div class="blog-post-content">
+                <p class="blog-intro"><?php echo nl2br(htmlspecialchars($post['excerpt'])); ?></p>
+                <?php echo $post['content']; ?>
+            </div>
+            <div class="blog-post-nav">
+                <a href="blog.php" class="btn btn-outline"><i class="fas fa-arrow-left"></i> <?php _e('public_back_home') ?></a>
+                <a href="reserva.php" class="btn btn-primary"><?php _e('public_book_now') ?></a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<?php include 'includes/footer.php'; ?>

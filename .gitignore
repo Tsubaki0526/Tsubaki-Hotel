@@ -1,0 +1,25 @@
+# Sensitive config
+env.php
+*.log
+
+# Uploaded files
+uploads/
+
+# Local fonts (loaded from CDN)
+fonts/
+
+# Directories
+logs/
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Database backups (move to _database/ outside repo)
+hotelms.sql
+admin_migration.sql
