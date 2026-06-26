@@ -72,24 +72,7 @@
             <div class="booking-form-container">
                 <div id="hotelCalendar"></div>
                 <form method="post" class="booking-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Tipo de Habitación *</label>
-                            <select name="room_type_id" required>
-                                <option value="">Selecciona una habitación</option>
-                                <option value="1">Single - $1,000/noche</option>
-                                <option value="2">Double - $1,500/noche</option>
-                                <option value="3">Triple - $2,000/noche</option>
-                                <option value="4">Family - $3,000/noche</option>
-                                <option value="5">King Sized - $5,500/noche</option>
-                                <option value="6">Master Suite - $6,500/noche</option>
-                                <option value="7">Mini-Suite - $3,600/noche</option>
-                                <option value="8">Connecting Rooms - $8,000/noche</option>
-                                <option value="9">Presidential Suite - $21,000/noche</option>
-                                <option value="10">Murphy Room - $6,900/noche</option>
-                            </select>
-                        </div>
-                    </div>
+                    <input type="hidden" name="room_type_id" id="roomTypeHidden" value="">
                     <div class="form-row two-cols">
                         <div class="form-group">
                             <label>Fecha de Check-in *</label>
@@ -260,14 +243,14 @@
 
     function submitBooking() {
         var form = document.querySelector('.booking-form');
-        var roomSelect = form.querySelector('select[name="room_type_id"]');
+        var roomTypeId = document.getElementById('roomTypeHidden').value;
         var checkIn = form.querySelector('input[name="check_in"]').value;
         var checkOut = form.querySelector('input[name="check_out"]').value;
         var name = form.querySelector('input[name="name"]').value;
         var email = form.querySelector('input[name="email"]').value;
         var phone = form.querySelector('input[name="contact_no"]').value;
 
-        if (!roomSelect.value) { alert('Selecciona un tipo de habitación.'); return; }
+        if (!roomTypeId) { alert('Selecciona un tipo de habitación en el calendario.'); return; }
         if (!checkIn || !checkOut) { alert('Selecciona las fechas de check-in y check-out en el calendario.'); return; }
         if (!name.trim()) { alert('Ingresa tu nombre.'); return; }
         if (!email.trim()) { alert('Ingresa tu correo electrónico.'); return; }
@@ -285,15 +268,14 @@
             return;
         }
 
-        var roomText = roomSelect.options[roomSelect.selectedIndex].text;
-        var roomName = roomText.split(' - ')[0];
-        var priceMatch = roomText.match(/\$([\d,]+)/);
-        var price = priceMatch ? parseInt(priceMatch[1].replace(/,/g, '')) : 0;
+        var room = hotelCalendar ? hotelCalendar.roomTypes.find(function(r) { return r.id == roomTypeId; }) : null;
+        var roomName = room ? room.name : 'Desconocido';
+        var price = room ? room.price : 0;
         var total = price * nights;
         var bookingCode = 'HP-' + Math.random().toString(36).substr(2, 8).toUpperCase();
 
         if (hotelCalendar) {
-            hotelCalendar.addBooking(parseInt(roomSelect.value), d1, d2);
+            hotelCalendar.addBooking(parseInt(roomTypeId), d1, d2);
         }
 
         var details = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;text-align:left;">' +

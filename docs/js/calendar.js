@@ -170,6 +170,7 @@ class HotelCalendar {
                 this.checkIn = null;
                 this.checkOut = null;
                 this._syncFormDates();
+                this._syncHiddenField();
                 this.render();
             });
         }
@@ -260,6 +261,12 @@ class HotelCalendar {
         const co = document.querySelector('input[name="check_out"]');
         if (ci) ci.value = this.checkIn ? this._dateKey(this.checkIn) : '';
         if (co) co.value = this.checkOut ? this._dateKey(this.checkOut) : '';
+        this._syncHiddenField();
+    }
+
+    _syncHiddenField() {
+        const hidden = document.getElementById('roomTypeHidden');
+        if (hidden) hidden.value = this.selectedRoomType || '';
     }
 
     addBooking(roomTypeId, checkIn, checkOut) {
@@ -308,19 +315,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         updateBookingSummary(room.name, nights, room.price, room.price * nights);
                     }
                 }
-            }
-        });
-    }
-
-    const roomSel = document.querySelector('select[name="room_type_id"]');
-    if (roomSel) {
-        roomSel.addEventListener('change', function() {
-            if (hotelCalendar) {
-                hotelCalendar.selectedRoomType = this.value ? parseInt(this.value) : null;
-                hotelCalendar.checkIn = null;
-                hotelCalendar.checkOut = null;
-                hotelCalendar._syncFormDates();
-                hotelCalendar.render();
             }
         });
     }
