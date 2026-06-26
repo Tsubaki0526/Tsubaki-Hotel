@@ -54,8 +54,8 @@
 
                                     <td><?php echo htmlspecialchars($staff['emp_id']); ?></td>
                                     <td><?php echo htmlspecialchars($staff['emp_name']); ?></td>
-                                    <td><?php echo htmlspecialchars($staff['staff_type']); ?></td>
-                                    <td><?php echo htmlspecialchars($staff['shift'] . ' - ' . $staff['shift_timing']); ?></td>
+                                    <td><?php echo htmlspecialchars(translate_db($staff['staff_type'])); ?></td>
+                                    <td><?php echo htmlspecialchars(translate_db($staff['shift'])) . ' - ' . htmlspecialchars($staff['shift_timing']); ?></td>
                                     <td><?php echo date('M j, Y', strtotime($staff['joining_date'])); ?></td>
                                     <td><?php echo htmlspecialchars($staff['salary']); ?></td>
                                     <td>
@@ -135,7 +135,7 @@ if (mysqli_num_rows($staff_result) > 0) {
                                                         $result = mysqli_query($connection, $query);
                                                         if (mysqli_num_rows($result) > 0) {
                                                             while ($staff = mysqli_fetch_assoc($result)) {
-                                                                echo '<option value="' . $staff['staff_type_id'] . '" ' . (($staff['staff_type_id'] == $staffGlobal['staff_type_id']) ? 'selected="selected"' : "") . '>' . htmlspecialchars($staff['staff_type']) . '</option>';
+                                                                 echo '<option value="' . $staff['staff_type_id'] . '" ' . (($staff['staff_type_id'] == $staffGlobal['staff_type_id']) ? 'selected="selected"' : "") . '>' . htmlspecialchars(translate_db($staff['staff_type'])) . '</option>';
                                                             }
                                                         }
                                                         ?>
@@ -150,7 +150,7 @@ if (mysqli_num_rows($staff_result) > 0) {
                                                         $result = mysqli_query($connection, $query);
                                                         if (mysqli_num_rows($result) > 0) {
                                                             while ($shift = mysqli_fetch_assoc($result)) {
-                                                                echo '<option value="' . $shift['shift_id'] . '" ' . (($shift['shift_id'] == $staffGlobal['shift_id']) ? 'selected="selected"' : "") . '>' . htmlspecialchars($shift['shift_timing']) . '</option>';
+                                                                 echo '<option value="' . $shift['shift_id'] . '" ' . (($shift['shift_id'] == $staffGlobal['shift_id']) ? 'selected="selected"' : "") . '>' . htmlspecialchars(translate_db($shift['shift'])) . ' - ' . htmlspecialchars($shift['shift_timing']) . '</option>';
                                                             }
                                                         }
                                                         ?>
@@ -184,7 +184,7 @@ if (mysqli_num_rows($staff_result) > 0) {
 
                                                         if (mysqli_num_rows($result) > 0) {
                                                             while ($id_card_type = mysqli_fetch_assoc($result)) {
-                                                                echo '<option  value="' . $id_card_type['id_card_type_id'] . '" ' . (($id_card_type['id_card_type_id'] == $staffGlobal['id_card_type']) ? 'selected="selected"' : "") . '>' . htmlspecialchars($id_card_type['id_card_type']) . '</option>';
+                                                                 echo '<option  value="' . $id_card_type['id_card_type_id'] . '" ' . (($id_card_type['id_card_type_id'] == $staffGlobal['id_card_type']) ? 'selected="selected"' : "") . '>' . htmlspecialchars(translate_db($id_card_type['id_card_type'])) . '</option>';
                                                             }
                                                         }
 
@@ -273,7 +273,7 @@ if (mysqli_num_rows($staff_result) > 0) {
                                             $result = mysqli_query($connection, $query);
                                             if (mysqli_num_rows($result) > 0) {
                                                 while ($shift = mysqli_fetch_assoc($result)) {
-                                                    echo '<option value="' . $shift['shift_id'] . '">' . htmlspecialchars($shift['shift_timing']) . '</option>';
+                                                    echo '<option value="' . $shift['shift_id'] . '">' . htmlspecialchars(translate_db($shift['shift'])) . ' - ' . htmlspecialchars($shift['shift_timing']) . '</option>';
                                                 }
                                             }
                                             ?>

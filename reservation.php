@@ -163,7 +163,7 @@ if (isset($_GET['room_id'])){
                                     $result = mysqli_query($connection,$query);
                                     if (mysqli_num_rows($result) > 0){
                                         while ($id_card_type = mysqli_fetch_assoc($result)){
-                                            echo '<option value="'.(int)$id_card_type['id_card_type_id'].'">'.htmlspecialchars($id_card_type['id_card_type']).'</option>';
+                                            echo '<option value="'.(int)$id_card_type['id_card_type_id'].'">'.htmlspecialchars(translate_db($id_card_type['id_card_type'])).'</option>';
                                         }}
                                     ?>
                                 </select>

@@ -694,4 +694,27 @@ return [
     'privacy_rights_text' => 'You have the right to access, rectify, cancel, or oppose the processing of your personal data at any time. To exercise these rights, contact us through the available channels.',
     'privacy_contact_title' => 'Contact',
     'privacy_contact_text' => 'If you have questions about this policy or wish to exercise your rights, contact us through the contact form or our email.',
+
+    // DB values translations (staff types)
+    'db_Manager' => 'Manager',
+    'db_Housekeeping Manager' => 'Housekeeping Manager',
+    'db_Front Desk Receptionist' => 'Front Desk Receptionist',
+    'db_Cheif' => 'Chef',
+    'db_Waiter' => 'Waiter',
+    'db_Room Attendant' => 'Room Attendant',
+    'db_Concierge' => 'Concierge',
+    'db_Hotel Maintenance Engineer' => 'Hotel Maintenance Engineer',
+    'db_Hotel Sales Manager' => 'Hotel Sales Manager',
+
+    // DB values translations (shifts)
+    'db_Morning' => 'Morning',
+    'db_Day' => 'Day',
+    'db_Evening' => 'Evening',
+    'db_Night' => 'Night',
+
+    // DB values translations (ID card types)
+    'db_National Identity Card' => 'National Identity Card',
+    'db_Voter Id Card' => 'Voter ID Card',
+    'db_Pan Card' => 'PAN Card',
+    'db_Driving License' => 'Driving License',
 ];

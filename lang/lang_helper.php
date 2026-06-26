@@ -62,6 +62,11 @@ function _e($key, $default = null) {
     echo __($key, $default);
 }
 
+function translate_db($value) {
+    $translated = __('db_' . $value);
+    return $translated !== 'db_' . $value ? $translated : $value;
+}
+
 function lang_switcher($base_url = '') {
     $langs = [
         'es' => 'Español',

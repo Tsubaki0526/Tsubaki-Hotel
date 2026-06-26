@@ -25,7 +25,7 @@
                                     $result = mysqli_query($connection, $query);
                                     if (mysqli_num_rows($result) > 0) {
                                         while ($staff = mysqli_fetch_assoc($result)) {
-                                            echo '<option value="' . $staff['staff_type_id'] . '">' . htmlspecialchars($staff['staff_type']) . '</option>';
+                                            echo '<option value="' . $staff['staff_type_id'] . '">' . htmlspecialchars(translate_db($staff['staff_type'])) . '</option>';
                                         }
                                     }
                                     ?>
@@ -42,7 +42,7 @@
                                     $result = mysqli_query($connection, $query);
                                     if (mysqli_num_rows($result) > 0) {
                                         while ($shift = mysqli_fetch_assoc($result)) {
-                                            echo '<option value="' . $shift['shift_id'] . '">' . htmlspecialchars($shift['shift'] . ' - ' . $shift['shift_timing']) . '</option>';
+                                            echo '<option value="' . $shift['shift_id'] . '">' . htmlspecialchars(translate_db($shift['shift'])) . ' - ' . htmlspecialchars($shift['shift_timing']) . '</option>';
                                         }
                                     }
                                     ?>
@@ -70,7 +70,7 @@
                                     $result = mysqli_query($connection, $query);
                                     if (mysqli_num_rows($result) > 0) {
                                         while ($id_card_type = mysqli_fetch_assoc($result)) {
-                                            echo '<option value="' . $id_card_type['id_card_type_id'] . '">' . htmlspecialchars($id_card_type['id_card_type']) . '</option>';
+                                            echo '<option value="' . $id_card_type['id_card_type_id'] . '">' . htmlspecialchars(translate_db($id_card_type['id_card_type'])) . '</option>';
                                         }
                                     }
                                     ?>

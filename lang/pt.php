@@ -670,5 +670,28 @@ return [
     'privacy_rights_title' => 'Seus Direitos',
     'privacy_rights_text' => 'Você tem direito a acessar, retificar, cancelar ou se opor ao tratamento dos seus dados pessoais a qualquer momento. Para exercer esses direitos, entre em contato conosco pelos canais disponíveis.',
     'privacy_contact_title' => 'Contato',
-    'privacy_contact_text' => 'Se você tiver dúvidas sobre esta política ou desejar exercer seus direitos, entre em contato conosco através do formulário de contato ou nosso e-mail.',
+    'privacy_contact_text' => 'Se vocǦ tiver dǧvidas sobre esta pol��tica ou desejar exercer seus direitos, entre em contato conosco atravǸs do formulǭrio de contato ou nosso e-mail.',
+
+    // DB values translations (staff types)
+    'db_Manager' => 'Gerente',
+    'db_Housekeeping Manager' => 'Gerente de Limpeza',
+    'db_Front Desk Receptionist' => 'Recepcionista',
+    'db_Cheif' => 'Chef',
+    'db_Waiter' => 'Garçom',
+    'db_Room Attendant' => 'Auxiliar de Quarto',
+    'db_Concierge' => 'Concierge',
+    'db_Hotel Maintenance Engineer' => 'Engenheiro de Manutenção',
+    'db_Hotel Sales Manager' => 'Gerente de Vendas',
+
+    // DB values translations (shifts)
+    'db_Morning' => 'Manhã',
+    'db_Day' => 'Dia',
+    'db_Evening' => 'Tarde',
+    'db_Night' => 'Noite',
+
+    // DB values translations (ID card types)
+    'db_National Identity Card' => 'Carteira de Identidade',
+    'db_Voter Id Card' => 'Carteira de Eleitor',
+    'db_Pan Card' => 'Cartão PAN',
+    'db_Driving License' => 'Carteira de Motorista',
 ];
