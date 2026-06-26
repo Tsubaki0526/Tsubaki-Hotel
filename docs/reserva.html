@@ -127,7 +127,7 @@
                         <label>Dirección</label>
                         <input type="text" name="address" placeholder="Tu dirección">
                     </div>
-                    <button type="submit" class="btn btn-primary btn-lg btn-block">Confirmar Reserva</button>
+                    <button type="button" onclick="submitBooking()" class="btn btn-primary btn-lg btn-block">Confirmar Reserva</button>
                 </form>
                 <div id="bookingSuccess" style="display:none;" class="booking-success">
                     <div style="text-align:center;padding:40px 20px;">
@@ -257,9 +257,8 @@
         }
     });
 
-    document.querySelector('.booking-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        var form = this;
+    function submitBooking() {
+        var form = document.querySelector('.booking-form');
         var roomSelect = form.querySelector('select[name="room_type_id"]');
         var checkIn = form.querySelector('input[name="check_in"]').value;
         var checkOut = form.querySelector('input[name="check_out"]').value;
@@ -272,8 +271,8 @@
         }
 
         var roomText = roomSelect.options[roomSelect.selectedIndex].text;
-        var d1 = new Date(checkIn);
-        var d2 = new Date(checkOut);
+        var d1 = new Date(checkIn + 'T12:00:00');
+        var d2 = new Date(checkOut + 'T12:00:00');
         var nights = Math.ceil((d2 - d1) / 86400000);
         var priceMatch = roomText.match(/\$([\d,]+)/);
         var price = priceMatch ? parseInt(priceMatch[1].replace(/,/g, '')) : 0;
@@ -292,7 +291,7 @@
         form.style.display = 'none';
         document.getElementById('bookingSuccess').style.display = 'block';
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+    }
 
     function resetBooking() {
         var form = document.querySelector('.booking-form');
