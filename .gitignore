@@ -20,6 +20,6 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Database backups (move to _database/ outside repo)
-hotelms.sql
-admin_migration.sql
+# Database backups in root (use _database/ folder instead)
+/hotelms.sql
+/admin_migration.sql

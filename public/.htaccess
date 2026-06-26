@@ -1,0 +1,22 @@
+Options -Indexes
+
+# Bloquear acceso directo a archivos sensibles
+<FilesMatch "\.(env|sql|md|txt|log|bak)$">
+  Require all denied
+</Files>
+
+# Proteger directorios
+<IfModule mod_dir.c>
+  DirectoryIndex index.php
+</IfModule>
+
+# Headers de seguridad
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Bloquear acceso a carpetas protegidas
+RewriteEngine On
+RewriteRule ^(?:logs|uploads|_database|lib|lang)/ - [F,L]
