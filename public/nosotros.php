@@ -2,11 +2,7 @@
 require_once 'includes/config.php';
 $page_title = __('public_about');
 
-$settings = [];
-$q = mysqli_query($connection, "SELECT * FROM site_settings");
-while ($r = mysqli_fetch_assoc($q)) {
-    $settings[$r['key_name']] = $r['key_value'];
-}
+$settings = getSettings();
 
 include 'includes/header.php';
 ?>

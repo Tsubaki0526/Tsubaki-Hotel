@@ -117,7 +117,7 @@ include 'includes/header.php';
                 </div>
                 <div class="room-card-body">
                     <h3><?php echo htmlspecialchars($o['room_type']); ?></h3>
-                    <p><?php _e('public_max_persons') ?> <?php echo $o['max_person']; ?></p>
+                    <p><?php _e('public_max_persons') ?> <?php echo htmlspecialchars((string)$o['max_person'], ENT_QUOTES, 'UTF-8'); ?></p>
                     <a href="habitacion.php?tipo=<?php echo $o['room_type_id']; ?>" class="btn btn-outline"><?php _e('public_view_more') ?></a>
                 </div>
             </div>

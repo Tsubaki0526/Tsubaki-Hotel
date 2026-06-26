@@ -30,7 +30,7 @@
                                 <td><?php echo htmlspecialchars($m['name']); ?></td>
                                 <td><a href="mailto:<?php echo htmlspecialchars($m['email']); ?>"><?php echo htmlspecialchars($m['email']); ?></a></td>
                                 <td><?php echo htmlspecialchars($m['phone'] ?? '-'); ?></td>
-                                <td><?php echo htmlspecialchars(substr($m['message'], 0, 80)); ?>...</td>
+                                <td><?php echo htmlspecialchars(substr($m['message'] ?? '', 0, 80)); ?>...</td>
                                 <td><?php echo date('d/m/Y H:i', strtotime($m['created_at'])); ?></td>
                                 <td>
                                     <a href="#viewMsgModal" class="btn btn-info" style="border-radius:60px;" data-bs-toggle="modal"
@@ -40,7 +40,7 @@
                                        data-msg="<?php echo htmlspecialchars($m['message']); ?>"
                                        data-date="<?php echo date('d/m/Y H:i', strtotime($m['created_at'])); ?>"
                                        id="viewMsgBtn"><i class="fa fa-eye"></i></a>
-                                    <a href="ajax.php?delete_message=<?php echo $m['id']; ?>&csrf=<?php echo csrf_token(); ?>" class="btn btn-danger" style="border-radius:60px;" onclick="return confirm('<?php _e('confirm_delete'); ?>')"><i class="fa fa-trash"></i></a>
+                                    <a href="ajax.php?delete_message=<?php echo htmlspecialchars($m['id']); ?>&csrf=<?php echo csrf_token(); ?>" class="btn btn-danger" style="border-radius:60px;" onclick="return confirm('<?php _e('confirm_delete'); ?>')"><i class="fa fa-trash"></i></a>
                                 </td>
                             </tr>
                         <?php endwhile; ?>

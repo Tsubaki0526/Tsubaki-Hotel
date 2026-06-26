@@ -1,10 +1,12 @@
 <?php
-session_start();
 require_once __DIR__ . '/db.php';
 lang_init();
 ?>
-<html>
+<!DOCTYPE html>
+<html lang="<?php echo $_SESSION['lang'] ?? 'es'; ?>">
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/login.css"/>
 </head>

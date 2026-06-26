@@ -2,11 +2,7 @@
 require_once 'includes/config.php';
 $page_title = __('public_home');
 
-$settings = [];
-$q = mysqli_query($connection, "SELECT * FROM site_settings");
-while ($r = mysqli_fetch_assoc($q)) {
-    $settings[$r['key_name']] = $r['key_value'];
-}
+$settings = getSettings();
 
 $rooms = getAllRooms();
 $roomtypes = getRoomTypes();
@@ -81,7 +77,7 @@ include 'includes/header.php';
                 <div class="room-card-body">
                     <h3><?php echo htmlspecialchars($type['room_type']); ?></h3>
                     <div class="room-features">
-                        <span><i class="fas fa-user"></i> <?php _e('public_max_persons') ?> <?php echo $type['max_person']; ?></span>
+                        <span><i class="fas fa-user"></i> <?php _e('public_max_persons') ?> <?php echo htmlspecialchars((string)$type['max_person'], ENT_QUOTES, 'UTF-8'); ?></span>
                         <span><i class="fas fa-vector-square"></i> <?php _e('public_available') ?>: <?php echo $count; ?></span>
                     </div>
                     <p><?php _e('public_room_card_text') ?></p>
@@ -159,14 +155,14 @@ include 'includes/header.php';
             <?php if (count($posts) > 0):
                 foreach ($posts as $post): ?>
                 <article class="blog-card">
-                    <div class="blog-img" style="background: linear-gradient(135deg, <?php echo $post['color'] ?? '#1a5276'; ?>, <?php echo $post['color2'] ?? '#2980b9'; ?>);">
+                    <div class="blog-img" style="background: linear-gradient(135deg, <?php echo htmlspecialchars($post['color'] ?? '#1a5276', ENT_QUOTES, 'UTF-8'); ?>, <?php echo htmlspecialchars($post['color2'] ?? '#2980b9', ENT_QUOTES, 'UTF-8'); ?>);">
                         <i class="fas fa-newspaper" style="font-size:3rem;color:rgba(255,255,255,0.3);"></i>
                     </div>
                     <div class="blog-body">
                         <span class="blog-date"><i class="far fa-calendar-alt"></i> <?php echo date('d M Y', strtotime($post['created_at'])); ?></span>
                         <h3><?php echo htmlspecialchars($post['title']); ?></h3>
                         <p><?php echo htmlspecialchars(substr($post['excerpt'], 0, 120)) . '...'; ?></p>
-                        <a href="entrada.php?slug=<?php echo $post['slug']; ?>" class="btn-link"><?php _e('public_read_more') ?> <i class="fas fa-arrow-right"></i></a>
+                        <a href="entrada.php?slug=<?php echo htmlspecialchars($post['slug'], ENT_QUOTES, 'UTF-8'); ?>" class="btn-link"><?php _e('public_read_more') ?> <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </article>
                 <?php endforeach;

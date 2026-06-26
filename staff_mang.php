@@ -52,26 +52,26 @@
                             while ($staff = mysqli_fetch_assoc($staff_result)) { ?>
                                 <tr>
 
-                                    <td><?php echo $staff['emp_id']; ?></td>
+                                    <td><?php echo htmlspecialchars($staff['emp_id']); ?></td>
                                     <td><?php echo htmlspecialchars($staff['emp_name']); ?></td>
                                     <td><?php echo htmlspecialchars($staff['staff_type']); ?></td>
                                     <td><?php echo htmlspecialchars($staff['shift'] . ' - ' . $staff['shift_timing']); ?></td>
                                     <td><?php echo date('M j, Y', strtotime($staff['joining_date'])); ?></td>
-                                    <td><?php echo $staff['salary']; ?></td>
+                                    <td><?php echo htmlspecialchars($staff['salary']); ?></td>
                                     <td>
                                         <button class="btn btn-warning" style="border-radius:60px;" data-bs-toggle="modal" data-bs-target="#changeShift"
-                                                data-id="<?php echo $staff['emp_id']; ?>" id="change_shift"><?php _e('staff_change_shift') ?></button>
+                                                data-id="<?php echo htmlspecialchars($staff['emp_id']); ?>" id="change_shift"><?php _e('staff_change_shift') ?></button>
                                     </td>
                                     <td>
 
                                         <button data-bs-toggle="modal"
-                                                data-bs-target="#empDetail<?php echo $staff['emp_id']; ?>"
-                                                data-id="<?php echo $staff['emp_id']; ?>" id="editEmp"
+                                                data-bs-target="#empDetail<?php echo htmlspecialchars($staff['emp_id']); ?>"
+                                                data-id="<?php echo htmlspecialchars($staff['emp_id']); ?>" id="editEmp"
                                                 class="btn btn-info" style="border-radius:60px;"><i class="fa fa-pencil"></i></button>
-                                        <a href='functionmis.php?empid=<?php echo $staff['emp_id']; ?>'
+                                        <a href='functionmis.php?empid=<?php echo htmlspecialchars($staff['emp_id']); ?>'
                                            class="btn btn-danger" onclick="return confirm('<?php _e('confirm_delete') ?>')" style="border-radius:60px;"><i
                                                      class="fa fa-trash"></i></a>
-                                        <a href='index.php?emp_history&empid=<?php echo $staff['emp_id']; ?>'
+                                        <a href='index.php?emp_history&empid=<?php echo htmlspecialchars($staff['emp_id']); ?>'
                                            class="btn btn-success" title="<?php _e('staff_history') ?>" style="border-radius:60px;"><i class="fa fa-eye"></i></a>
                                     </td>
                                 </tr>
@@ -105,7 +105,7 @@ if (mysqli_num_rows($staff_result) > 0) {
         ?>
 
         <!-- Employee Detail-->
-        <div id="empDetail<?php echo $staffGlobal['emp_id']; ?>" class="modal fade" role="dialog">
+        <div id="empDetail<?php echo htmlspecialchars($staffGlobal['emp_id']); ?>" class="modal fade" role="dialog">
             <div class="modal-dialog">
 
                 <!-- Modal content-->
@@ -119,7 +119,7 @@ if (mysqli_num_rows($staff_result) > 0) {
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="panel panel-default">
-                                    <div class="panel-heading">Detalles:</div>
+                                    <div class="panel-heading"><?php _e('staff_details_label') ?></div>
                                     <div class="panel-body">
                                         <form data-toggle="validator" role="form" action="functionmis.php"
                                               method="post">
@@ -156,7 +156,7 @@ if (mysqli_num_rows($staff_result) > 0) {
                                                         ?>
                                                     </select>
                                                 </div>
-                                                <input type="hidden" value="<?php echo $staffGlobal['emp_id']; ?>"
+                                                <input type="hidden" value="<?php echo htmlspecialchars($staffGlobal['emp_id']); ?>"
                                                        id="emp_id" name="emp_id">
 
                                                 <div class="form-group col-lg-6">
@@ -240,56 +240,66 @@ if (mysqli_num_rows($staff_result) > 0) {
             </div>
         </div>
 
-        <!-- Employee Detail-->
-        <div id="changeShift" class="modal fade" role="dialog">
-            <div class="modal-dialog">
+        <?php
+    }
+}
+?>
 
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        <h4 class="modal-title"><?php _e('staff_change_shift') ?></h4>
-                    </div>
-                    <div class="modal-body">
+<!-- Change Shift Modal (outside loop) -->
+<div id="changeShift" class="modal fade" role="dialog">
+    <div class="modal-dialog">
 
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="panel panel-default">
-                                    <div class="panel-body">
-                                        <form data-toggle="validator" role="form" action="ajax.php" method="post">
-                                            <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
-                                            <div class="row">
-                                            <div class="form-group col-lg-12">
-                                                <label><?php _e('staff_shift') ?></label>
-                                                <select class="form-control" id="shift" name="shift_id" required>
-                                                    <option selected disabled><?php _e('staff_select_shift') ?></option>
-                                                    <?php
-                                                    $query = "SELECT * FROM shift";
-                                                    $result = mysqli_query($connection, $query);
-                                                    if (mysqli_num_rows($result) > 0) {
-                                                        while ($shift = mysqli_fetch_assoc($result)) {
-                                                            echo '<option value="' . $shift['shift_id'] . '" ' . (($shift['shift_id'] == $staffGlobal['shift_id']) ? 'selected="selected"' : "") . '>' . htmlspecialchars($shift['shift_timing']) . '</option>';
-                                                        }
-                                                    }
-                                                    ?>
-                                                </select>
-                                            </div>
-                                            </div>
-                                            <input type="hidden" name="emp_id" value="" id="getEmpId">
-                                            <button type="submit" class="btn btn-lg btn-primary" name="change_shift"><?php _e('staff_save') ?></button>
-                                        </form>
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h4 class="modal-title"><?php _e('staff_change_shift') ?></h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <form data-toggle="validator" role="form" action="ajax.php" method="post">
+                                    <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
+                                    <div class="row">
+                                    <div class="form-group col-lg-12">
+                                        <label><?php _e('staff_shift') ?></label>
+                                        <select class="form-control" id="changeShiftSelect" name="shift_id" required>
+                                            <option selected disabled><?php _e('staff_select_shift') ?></option>
+                                            <?php
+                                            $query = "SELECT * FROM shift";
+                                            $result = mysqli_query($connection, $query);
+                                            if (mysqli_num_rows($result) > 0) {
+                                                while ($shift = mysqli_fetch_assoc($result)) {
+                                                    echo '<option value="' . $shift['shift_id'] . '">' . htmlspecialchars($shift['shift_timing']) . '</option>';
+                                                }
+                                            }
+                                            ?>
+                                        </select>
                                     </div>
-                                </div>
+                                    </div>
+                                    <input type="hidden" name="emp_id" value="" id="getEmpId">
+                                    <button type="submit" class="btn btn-lg btn-primary" name="change_shift"><?php _e('staff_save') ?></button>
+                                </form>
                             </div>
-
-
                         </div>
-
                     </div>
+
+
                 </div>
 
             </div>
         </div>
-        <?php
-    }
-}
+
+    </div>
+</div>
+
+<script>
+document.getElementById('changeShift').addEventListener('show.bs.modal', function (event) {
+    var button = event.relatedTarget;
+    var empId = button.getAttribute('data-id');
+    document.getElementById('getEmpId').value = empId;
+});
+</script>

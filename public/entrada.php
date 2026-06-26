@@ -30,7 +30,14 @@ include 'includes/header.php';
             </div>
             <div class="blog-post-content">
                 <p class="blog-intro"><?php echo nl2br(htmlspecialchars($post['excerpt'])); ?></p>
-                <?php echo strip_tags($post['content'], '<p><br><h1><h2><h3><h4><h5><h6><strong><b><i><em><u><a><img><ul><ol><li><blockquote><pre><code><table><thead><tbody><tr><th><td><div><span><hr><br><figure><figcaption>'); ?>
+                <?php
+                $clean = strip_tags($post['content'], '<p><br><h1><h2><h3><h4><h5><h6><strong><b><i><em><u><a><img><ul><ol><li><blockquote><pre><code><table><thead><tbody><tr><th><td><div><span><hr><br><figure><figcaption>');
+                $clean = preg_replace('/href\s*=\s*["\']?\s*javascript\s*:/i', 'href="#"', $clean);
+                $clean = preg_replace('/src\s*=\s*["\']?\s*javascript\s*:/i', 'src=""', $clean);
+                $clean = preg_replace('/on\w+\s*=\s*["\'][^"\']*["\']/i', '', $clean);
+                $clean = preg_replace('/on\w+\s*=\s*[^\s>]+/i', '', $clean);
+                echo $clean;
+                ?>
             </div>
             <div class="blog-post-nav">
                 <a href="blog.php" class="btn btn-outline"><i class="fas fa-arrow-left"></i> <?php _e('public_back_home') ?></a>

@@ -1,5 +1,4 @@
 <?php
-session_start();
 include_once 'db.php';
 lang_init();
 
@@ -64,17 +63,6 @@ if (isset($_POST['login'])) {
             reset_login_attempts();
             header('Location:index.php?dashboard');
             exit;
-        } elseif (md5($password) === $user['password']) {
-            session_regenerate_id(true);
-            $new_hash = password_hash($password, PASSWORD_DEFAULT);
-            $update = mysqli_prepare($connection, "UPDATE user SET password = ? WHERE id = ?");
-            mysqli_stmt_bind_param($update, "si", $new_hash, $user['id']);
-            mysqli_stmt_execute($update);
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['user_id'] = $user['id'];
-            reset_login_attempts();
-            header('Location:index.php?dashboard');
-            exit;
         }
     }
     increment_login_attempts();
@@ -85,10 +73,10 @@ if (isset($_POST['login'])) {
 if (isset($_POST['add_room'])) {
     if (!isset($_SESSION['user_id'])) { json_output(['done' => false, 'data' => __('ajax_unauthorized')]); }
     require_csrf();
-    $room_type_id = $_POST['room_type_id'];
+    $room_type_id = intval($_POST['room_type_id']);
     $room_no = trim($_POST['room_no']);
 
-    if ($room_no == '') {
+    if (empty($room_no)) {
         json_output(['done' => false, 'data' => __('ajax_room_number_required')]);
     }
 
@@ -131,11 +119,11 @@ if (isset($_POST['room'])) {
 if (isset($_POST['edit_room'])) {
     if (!isset($_SESSION['user_id'])) { json_output(['done' => false, 'data' => __('ajax_unauthorized')]); }
     require_csrf();
-    $room_type_id = $_POST['room_type_id'];
+    $room_type_id = intval($_POST['room_type_id']);
     $room_no = trim($_POST['room_no']);
-    $room_id = $_POST['room_id'];
+    $room_id = intval($_POST['room_id']);
 
-    if ($room_no == '') {
+    if (empty($room_no)) {
         json_output(['done' => false, 'data' => __('ajax_room_number_required')]);
     }
 
@@ -199,7 +187,7 @@ if (isset($_POST['booking'])) {
     $name = $_POST['name'];
     $contact_no = $_POST['contact_no'];
     $email = $_POST['email'];
-    $id_card_id = $_POST['id_card_id'];
+    $id_card_id = intval($_POST['id_card_id']);
     $id_card_no = $_POST['id_card_no'];
     $address = $_POST['address'];
 
@@ -248,7 +236,7 @@ if (isset($_POST['booking'])) {
 if (isset($_POST['cutomerDetails'])) {
     $room_id = $_POST['room_id'];
 
-    if ($room_id != '') {
+    if ($room_id !== '') {
         $stmt = mysqli_prepare($connection, "SELECT * FROM room NATURAL JOIN room_type NATURAL JOIN booking NATURAL JOIN customer WHERE room_id = ? AND payment_status = '0'");
         mysqli_stmt_bind_param($stmt, "i", $room_id);
         mysqli_stmt_execute($stmt);
@@ -307,7 +295,7 @@ if (isset($_POST['check_in_room'])) {
     $booking_id = $_POST['booking_id'];
     $advance_payment = (int)$_POST['advance_payment'];
 
-    if ($booking_id == '') {
+    if ($booking_id === '') {
         json_output(['done' => false, 'data' => __('ajax_booking_error')]);
     }
 
@@ -318,6 +306,8 @@ if (isset($_POST['check_in_room'])) {
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     $booking_details = mysqli_fetch_assoc($result);
+
+    if (!$booking_details) { json_output(['done' => false, 'data' => __('ajax_booking_not_found')]); }
 
     $room_id = $booking_details['room_id'];
     $remaining_price = $booking_details['total_price'] - $advance_payment;
@@ -350,7 +340,7 @@ if (isset($_POST['check_out_room'])) {
     $booking_id = $_POST['booking_id'];
     $remaining_amount = (int)$_POST['remaining_amount'];
 
-    if ($booking_id == '') {
+    if ($booking_id === '') {
         json_output(['done' => false, 'data' => __('ajax_booking_error')]);
     }
 
@@ -360,10 +350,12 @@ if (isset($_POST['check_out_room'])) {
     $result = mysqli_stmt_get_result($stmt);
     $booking_details = mysqli_fetch_assoc($result);
 
+    if (!$booking_details) { json_output(['done' => false, 'data' => __('ajax_booking_not_found')]); }
+
     $room_id = $booking_details['room_id'];
     $remaining_price = $booking_details['remaining_price'];
 
-    if ($remaining_price == $remaining_amount) {
+    if (abs(floatval($remaining_price) - floatval($remaining_amount)) < 0.01) {
         mysqli_begin_transaction($connection);
 
         $updateBooking = mysqli_prepare($connection, "UPDATE booking SET remaining_price = '0', payment_status = '1' WHERE booking_id = ?");
@@ -607,7 +599,7 @@ function uploadImage($field_name) {
     if (!in_array($mime, $allowed_mimes)) {
         return false;
     }
-    $filename = uniqid('img_') . '.' . $ext;
+    $filename = bin2hex(random_bytes(16)) . '.' . $ext;
     $dest = __DIR__ . '/uploads/' . $filename;
     if (move_uploaded_file($file['tmp_name'], $dest)) {
         return $filename;

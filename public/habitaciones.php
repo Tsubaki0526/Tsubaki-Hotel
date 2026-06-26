@@ -18,7 +18,7 @@ $rooms = getAllRooms();
     <div class="container">
         <div class="room-filters">
             <?php foreach ($roomtypes as $type): ?>
-            <a href="habitacion.php?tipo=<?php echo $type['room_type_id']; ?>" class="filter-btn">
+            <a href="habitacion.php?tipo=<?php echo (int)$type['room_type_id']; ?>" class="filter-btn">
                 <?php echo htmlspecialchars($type['room_type']); ?>
                 <small>desde $<?php echo number_format($type['price']); ?></small>
             </a>
@@ -44,7 +44,7 @@ $rooms = getAllRooms();
                         <div class="room-detailed-price">$<?php echo number_format($type['price']); ?> <small><?php _e('public_per_night') ?></small></div>
                     </div>
                     <div class="room-detailed-features">
-                        <span><i class="fas fa-user"></i> <?php _e('public_max_persons') ?> <?php echo $type['max_person']; ?></span>
+                        <span><i class="fas fa-user"></i> <?php _e('public_max_persons') ?> <?php echo htmlspecialchars((string)$type['max_person'], ENT_QUOTES, 'UTF-8'); ?></span>
                         <span><i class="fas fa-door-open"></i> <?php echo $available; ?> <?php _e('public_available') ?></span>
                         <span><i class="fas fa-wifi"></i> <?php _e('public_amenity_wifi') ?></span>
                         <span><i class="fas fa-snowflake"></i> <?php _e('public_amenity_ac') ?></span>
@@ -53,8 +53,8 @@ $rooms = getAllRooms();
                     </div>
                     <p><?php _e('public_room_description') ?></p>
                     <div class="room-detailed-actions">
-                        <a href="habitacion.php?tipo=<?php echo $type['room_type_id']; ?>" class="btn btn-outline"><?php _e('public_view_more') ?></a>
-                        <a href="reserva.php?tipo=<?php echo $type['room_type_id']; ?>" class="btn btn-primary"><?php _e('public_reserve') ?></a>
+                        <a href="habitacion.php?tipo=<?php echo (int)$type['room_type_id']; ?>" class="btn btn-outline"><?php _e('public_view_more') ?></a>
+                        <a href="reserva.php?tipo=<?php echo (int)$type['room_type_id']; ?>" class="btn btn-primary"><?php _e('public_reserve') ?></a>
                     </div>
                 </div>
             </div>

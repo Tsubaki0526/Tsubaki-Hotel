@@ -12,21 +12,28 @@ $success = '';
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = trim($_POST['name'] ?? '');
-    $email = trim($_POST['email'] ?? '');
-    $phone = trim($_POST['phone'] ?? '');
-    $message = trim($_POST['message'] ?? '');
-
-    if ($name && $email && $message) {
-        $stmt = mysqli_prepare($connection, "INSERT INTO contact_messages (name, email, phone, message) VALUES (?, ?, ?, ?)");
-        mysqli_stmt_bind_param($stmt, "ssss", $name, $email, $phone, $message);
-        if (mysqli_stmt_execute($stmt)) {
-            $success = __('public_send_success');
-        } else {
-            $error = __('public_send_error');
-        }
-    } else {
+    $token = $_POST['csrf_token'] ?? '';
+    if (!verify_csrf($token)) {
         $error = __('field_required');
+    } else {
+        $name = trim($_POST['name'] ?? '');
+        $email = trim($_POST['email'] ?? '');
+        $phone = trim($_POST['phone'] ?? '');
+        $message = trim($_POST['message'] ?? '');
+
+        if (empty($name) || empty($email) || empty($message)) {
+            $error = __('field_required');
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $error = __('field_required');
+        } else {
+            $stmt = mysqli_prepare($connection, "INSERT INTO contact_messages (name, email, phone, message) VALUES (?, ?, ?, ?)");
+            mysqli_stmt_bind_param($stmt, "ssss", $name, $email, $phone, $message);
+            if (mysqli_stmt_execute($stmt)) {
+                $success = __('public_send_success');
+            } else {
+                $error = __('public_send_error');
+            }
+        }
     }
 }
 
@@ -96,12 +103,13 @@ include 'includes/header.php';
             <div class="contact-form">
                 <h2><?php _e('public_send_message') ?></h2>
                 <?php if ($success): ?>
-                    <div class="alert alert-success"><i class="fas fa-check-circle"></i> <?php echo $success; ?></div>
+                    <div class="alert alert-success"><i class="fas fa-check-circle"></i> <?php echo htmlspecialchars($success, ENT_QUOTES, 'UTF-8'); ?></div>
                 <?php endif; ?>
                 <?php if ($error): ?>
-                    <div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> <?php echo $error; ?></div>
+                    <div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> <?php echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?></div>
                 <?php endif; ?>
                 <form method="post">
+                    <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
                     <div class="form-group">
                         <input type="text" name="name" placeholder="<?php _e('public_name') ?> *" required>
                     </div>

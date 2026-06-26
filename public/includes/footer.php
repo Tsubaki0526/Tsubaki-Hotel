@@ -35,7 +35,7 @@
                     <?php if (!empty($social_yt)): ?><a href="<?php echo htmlspecialchars($social_yt); ?>" target="_blank" rel="noopener"><i class="fab fa-youtube"></i></a><?php endif; ?>
                 </div>
                 <?php if ($whatsapp): ?>
-                    <a href="<?php echo $whatsapp_url; ?>" target="_blank" class="whatsapp-btn-footer" rel="noopener">
+                    <a href="<?php echo htmlspecialchars($whatsapp_url, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" class="whatsapp-btn-footer" rel="noopener">
                         <i class="fab fa-whatsapp"></i> <?php _e('public_contact') ?>
                     </a>
                 <?php endif; ?>
@@ -57,7 +57,7 @@
                     <?php
                     $types = getRoomTypes();
                     foreach ($types as $t) {
-                        echo '<li><a href="habitacion.php?tipo=' . $t['room_type_id'] . '">' . htmlspecialchars($t['room_type']) . '</a></li>';
+                        echo '<li><a href="habitacion.php?tipo=' . (int)$t['room_type_id'] . '">' . htmlspecialchars($t['room_type']) . '</a></li>';
                     }
                     ?>
                 </ul>
@@ -83,7 +83,7 @@
 
 <script src="assets/js/main.js"></script>
 <?php if (!empty($whatsapp)): ?>
-<a href="<?php echo $whatsapp_url; ?>" target="_blank" class="whatsapp-float" rel="noopener" title="<?php _e('public_contact') ?>">
+<a href="<?php echo htmlspecialchars($whatsapp_url, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" class="whatsapp-float" rel="noopener" title="<?php _e('public_contact') ?>">
     <i class="fab fa-whatsapp"></i>
 </a>
 <?php endif; ?>

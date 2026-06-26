@@ -197,7 +197,7 @@ $bank_instructions = $settings['payment_bank_instructions'] ?? __('pay_bank_tran
             <form action="ajax.php" method="post">
                 <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
                 <input type="hidden" name="pay_booking_id" value="<?php echo $booking_id; ?>">
-                <input type="hidden" name="pay_amount" value="<?php echo $pay_amount; ?>">
+                <input type="hidden" name="pay_amount" value="<?php echo htmlspecialchars($pay_amount); ?>">
                 <div class="row g-2">
                     <div class="col-md-6">
                         <select name="pay_method" class="form-control" style="height:48px;">

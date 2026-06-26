@@ -59,7 +59,7 @@
                                     <td>
                                         <?php
                                         if ($rooms['status'] == 0) {
-                                            echo '<a href="index.php?reservation&room_id=' . $rooms['room_id'] . '&room_type_id=' . $rooms['room_type_id'] . '" class="btn btn-success" style="border-radius:60px;">' . __('room_book') . '</a>';
+                                            echo '<a href="index.php?reservation&room_id=' . htmlspecialchars($rooms['room_id']) . '&room_type_id=' . htmlspecialchars($rooms['room_type_id']) . '" class="btn btn-success" style="border-radius:60px;">' . __('room_book') . '</a>';
                                         } else {
                                             echo '<a href="#" class="btn btn-danger" style="border-radius:60px;">' . __('room_booked') . '</a>';
                                         }
@@ -69,7 +69,7 @@
                                     <td>
                                         <?php
                                         if ($rooms['status'] == 1 && $rooms['check_in_status'] == 0) {
-                                            echo '<button class="btn btn-warning" id="checkInRoom"  data-id="' . $rooms['room_id'] . '" data-bs-toggle="modal" style="border-radius:60px;" data-bs-target="#checkIn">' . __('room_check_in') . '</button>';
+                                            echo '<button class="btn btn-warning" id="checkInRoom"  data-id="' . htmlspecialchars($rooms['room_id']) . '" data-bs-toggle="modal" style="border-radius:60px;" data-bs-target="#checkIn">' . __('room_check_in') . '</button>';
                                         } elseif ($rooms['status'] == 0) {
                                             echo '-';
                                         } else {
@@ -80,7 +80,7 @@
                                     <td>
                                         <?php
                                         if ($rooms['status'] == 1 && $rooms['check_in_status'] == 1) {
-                                            echo '<button class="btn btn-primary" style="border-radius:60px;" id="checkOutRoom" data-id="' . $rooms['room_id'] . '">' . __('room_check_out') . '</button>';
+                                            echo '<button class="btn btn-primary" style="border-radius:60px;" id="checkOutRoom" data-id="' . htmlspecialchars($rooms['room_id']) . '">' . __('room_check_out') . '</button>';
                                         } elseif ($rooms['status'] == 0) {
                                             echo '-';
                                         }
@@ -89,19 +89,19 @@
                                     <td>
 
                                         <button title="<?php _e('edit') ?>" style="border-radius:60px;" data-bs-toggle="modal"
-                                                data-bs-target="#editRoom" data-id="<?php echo $rooms['room_id']; ?>"
+                                                data-bs-target="#editRoom" data-id="<?php echo htmlspecialchars($rooms['room_id']); ?>"
                                                 id="roomEdit" class="btn btn-info"><i class="fa fa-pencil"></i></button>
                                         <?php
                                         if ($rooms['status'] == 1) {
-                                            echo '<button title="' . __('room_customer_details') . '" data-bs-toggle="modal" data-bs-target="#cutomerDetailsModal" data-id="' . $rooms['room_id'] . '" id="cutomerDetails" class="btn btn-warning" style="border-radius:60px;"><i class="fa fa-eye"></i></button>';
+                                            echo '<button title="' . __('room_customer_details') . '" data-bs-toggle="modal" data-bs-target="#cutomerDetailsModal" data-id="' . htmlspecialchars($rooms['room_id']) . '" id="cutomerDetails" class="btn btn-warning" style="border-radius:60px;"><i class="fa fa-eye"></i></button>';
                                         }
                                         ?>
 
-                                        <a href="ajax.php?delete_room=<?php echo $rooms['room_id']; ?>&csrf=<?php echo csrf_token(); ?>"
+                                        <a href="ajax.php?delete_room=<?php echo htmlspecialchars($rooms['room_id']); ?>&csrf=<?php echo csrf_token(); ?>"
                                            class="btn btn-danger" style="border-radius:60px;" onclick="return confirm('<?php _e('confirm_delete') ?>')"><i
                                                      class="fa fa-trash" alt="<?php _e('delete') ?>"></i></a>
                                         <?php if (!empty($rooms['active_booking_id'])): ?>
-                                        <a href="invoice.php?booking_id=<?php echo $rooms['active_booking_id']; ?>"
+                                        <a href="invoice.php?booking_id=<?php echo htmlspecialchars($rooms['active_booking_id']); ?>"
                                            class="btn btn-success" style="border-radius:60px;" title="<?php _e('room_invoice') ?>"><i class="fa fa-file-text"></i></a>
                                         <?php endif; ?>
                                     </td>
@@ -146,7 +146,7 @@
                                         $result = mysqli_query($connection, $query);
                                         if (mysqli_num_rows($result) > 0) {
                                             while ($room_type = mysqli_fetch_assoc($result)) {
-                                                echo '<option value="' . $room_type['room_type_id'] . '">' . htmlspecialchars($room_type['room_type']) . '</option>';
+                                                echo '<option value="' . htmlspecialchars($room_type['room_type_id']) . '">' . htmlspecialchars($room_type['room_type']) . '</option>';
                                             }
                                         }
                                         ?>
@@ -194,7 +194,7 @@
                                         $result = mysqli_query($connection, $query);
                                         if (mysqli_num_rows($result) > 0) {
                                             while ($room_type = mysqli_fetch_assoc($result)) {
-                                                echo '<option value="' . $room_type['room_type_id'] . '">' . htmlspecialchars($room_type['room_type']) . '</option>';
+                                                echo '<option value="' . htmlspecialchars($room_type['room_type_id']) . '">' . htmlspecialchars($room_type['room_type']) . '</option>';
                                             }
                                         }
                                         ?>

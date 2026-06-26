@@ -3,6 +3,9 @@ header("X-Content-Type-Options: nosniff");
 header("X-Frame-Options: DENY");
 header("X-XSS-Protection: 1; mode=block");
 header("Referrer-Policy: strict-origin-when-cross-origin");
+if (!isset($settings) && function_exists('getSettings')) {
+    $settings = getSettings();
+}
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo $GLOBALS['lang_current'] ?? 'es'; ?>">
@@ -10,7 +13,7 @@ header("Referrer-Policy: strict-origin-when-cross-origin");
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <title><?php echo isset($page_title) ? $page_title . ' - ' : ''; ?><?php echo htmlspecialchars($settings['site_name'] ?? __('public_hotel_name')); ?></title>
+    <title><?php echo isset($page_title) ? htmlspecialchars($page_title, ENT_QUOTES, 'UTF-8') . ' - ' : ''; ?><?php echo htmlspecialchars($settings['site_name'] ?? __('public_hotel_name')); ?></title>
     <meta name="description" content="<?php echo htmlspecialchars($settings['site_description'] ?? __('public_header_description')); ?>">
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">

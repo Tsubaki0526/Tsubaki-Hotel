@@ -61,7 +61,7 @@ function stripeRetrieveSession($session_id) {
 }
 
 function stripeVerifyWebhook($payload, $sig_header, $webhook_secret) {
-    $computed = hash_hmac('sha256', $payload, $webhook_secret);
+    if (empty($sig_header) || empty($webhook_secret)) return false;
     $expected_parts = explode(',', $sig_header);
     $expected_sig = '';
     $expected_timestamp = '';
@@ -69,6 +69,7 @@ function stripeVerifyWebhook($payload, $sig_header, $webhook_secret) {
         if (strpos($part, 'v1=') === 0) $expected_sig = substr($part, 3);
         if (strpos($part, 't=') === 0) $expected_timestamp = substr($part, 2);
     }
+    if (empty($expected_sig) || empty($expected_timestamp)) return false;
     $signed_payload = "$expected_timestamp.$payload";
     $computed_sig = hash_hmac('sha256', $signed_payload, $webhook_secret);
     return hash_equals($computed_sig, $expected_sig);

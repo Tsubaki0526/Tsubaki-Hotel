@@ -34,7 +34,7 @@
                         $types = getRoomTypes();
                         foreach ($types as $t): ?>
                             <tr>
-                                <td><?php echo $t['room_type_id']; ?></td>
+                                <td><?php echo htmlspecialchars($t['room_type_id']); ?></td>
                                 <td>
                                     <?php if (!empty($t['image'])): 
                                         $img_src = (strpos($t['image'], 'http') === 0) ? $t['image'] : 'uploads/' . $t['image'];
@@ -46,14 +46,14 @@
                                 </td>
                                 <td><strong><?php echo htmlspecialchars($t['room_type']); ?></strong></td>
                                 <td>$<?php echo number_format($t['price']); ?></td>
-                                <td><?php echo $t['max_person']; ?></td>
+                                <td><?php echo htmlspecialchars($t['max_person']); ?></td>
                                 <td><?php echo htmlspecialchars(substr($t['description'] ?? '', 0, 50)); ?>...</td>
                                 <td>
                                     <a href="#editRoomTypeModal" class="btn btn-info" style="border-radius:60px;" data-bs-toggle="modal"
-                                       data-id="<?php echo $t['room_type_id']; ?>"
+                                       data-id="<?php echo htmlspecialchars($t['room_type_id']); ?>"
                                        data-type="<?php echo htmlspecialchars($t['room_type']); ?>"
-                                       data-price="<?php echo $t['price']; ?>"
-                                       data-max="<?php echo $t['max_person']; ?>"
+                                       data-price="<?php echo htmlspecialchars($t['price']); ?>"
+                                       data-max="<?php echo htmlspecialchars($t['max_person']); ?>"
                                        data-desc="<?php echo htmlspecialchars($t['description'] ?? ''); ?>"
                                        data-image="<?php echo htmlspecialchars($t['image'] ?? ''); ?>"
                                        data-amenities="<?php echo htmlspecialchars($t['amenities'] ?? ''); ?>"
@@ -77,7 +77,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 <h4 class="modal-title"><?php _e('room_types_new_title'); ?></h4>
             </div>
-            <form action="ajax.php" method="post" enctype="multipart/form-data">
+            <form action="ajax.php" method="post" enctype="multipart/form-data" id="addRoomForm">
                 <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
                 <div class="modal-body">
                     <div class="row">

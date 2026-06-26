@@ -7,68 +7,84 @@ $success = false;
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $room_type_id = intval($_POST['room_type_id']);
-    $check_in = $_POST['check_in'];
-    $check_out = $_POST['check_out'];
-    $name = trim($_POST['name']);
-    $last_name = trim($_POST['last_name']);
-    $email = trim($_POST['email']);
-    $contact_no = trim($_POST['contact_no']);
-    $address = trim($_POST['address']);
-
-    $stmt = mysqli_prepare($connection, "SELECT * FROM room WHERE room_type_id = ? AND status IS NULL AND deleteStatus = 0 LIMIT 1");
-    mysqli_stmt_bind_param($stmt, "i", $room_type_id);
-    mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
-    $room = mysqli_fetch_assoc($result);
-
-    if (!$room) {
-        $error = __('public_not_available');
-    } elseif (empty($name) || empty($check_in) || empty($check_out)) {
+    $token = $_POST['csrf_token'] ?? '';
+    if (!verify_csrf($token)) {
         $error = __('field_required');
     } else {
-        mysqli_begin_transaction($connection);
-        $csql = "INSERT INTO customer (customer_name, contact_no, email, id_card_type_id, id_card_no, address) VALUES (?, ?, ?, 1, 'Pendiente', ?)";
-        $stmt_c = mysqli_prepare($connection, $csql);
-        $fullname = $name . ' ' . $last_name;
-        mysqli_stmt_bind_param($stmt_c, "ssss", $fullname, $contact_no, $email, $address);
-        $c_ok = mysqli_stmt_execute($stmt_c);
+        $room_type_id = intval($_POST['room_type_id']);
+        $check_in = trim($_POST['check_in']);
+        $check_out = trim($_POST['check_out']);
+        $name = trim($_POST['name']);
+        $last_name = trim($_POST['last_name']);
+        $email = trim($_POST['email']);
+        $contact_no = trim($_POST['contact_no']);
+        $address = trim($_POST['address']);
 
-        if ($c_ok) {
-            $customer_id = mysqli_insert_id($connection);
-            $stmt_t = mysqli_prepare($connection, "SELECT price FROM room_type WHERE room_type_id = ?");
-            mysqli_stmt_bind_param($stmt_t, "i", $room_type_id);
-            mysqli_stmt_execute($stmt_t);
-            $t_result = mysqli_stmt_get_result($stmt_t);
-            $type_data = mysqli_fetch_assoc($t_result);
-            $total_price = $type_data['price'];
-
-            $bsql = "INSERT INTO booking (customer_id, room_id, check_in, check_out, total_price, remaining_price, payment_status) VALUES (?, ?, ?, ?, ?, ?, 0)";
-            $stmt_b = mysqli_prepare($connection, $bsql);
-            mysqli_stmt_bind_param($stmt_b, "iissii", $customer_id, $room['room_id'], $check_in, $check_out, $total_price, $total_price);
-            $b_ok = mysqli_stmt_execute($stmt_b);
-
-            if ($b_ok) {
-                $new_booking_id = mysqli_insert_id($connection);
-                $inv_no = 'INV-' . str_pad($new_booking_id, 5, '0', STR_PAD_LEFT);
-                $upd = mysqli_prepare($connection, "UPDATE booking SET invoice_no=? WHERE booking_id=?");
-                mysqli_stmt_bind_param($upd, "si", $inv_no, $new_booking_id);
-                mysqli_stmt_execute($upd);
-
-                $rsql = "UPDATE room SET status = 1 WHERE room_id = ?";
-                $stmt_r = mysqli_prepare($connection, $rsql);
-                mysqli_stmt_bind_param($stmt_r, "i", $room['room_id']);
-                mysqli_stmt_execute($stmt_r);
-                mysqli_commit($connection);
-                $success = true;
-                $success_booking_id = $new_booking_id;
-            } else {
-                mysqli_rollback($connection);
-                $error = __('public_booking_error');
-            }
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $check_in) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $check_out)) {
+            $error = __('field_required');
+        } elseif ($check_out <= $check_in) {
+            $error = __('field_required');
+        } elseif ($check_in < date('Y-m-d')) {
+            $error = __('field_required');
         } else {
-            mysqli_rollback($connection);
-            $error = __('public_booking_error');
+            $stmt = mysqli_prepare($connection, "SELECT * FROM room WHERE room_type_id = ? AND status IS NULL AND deleteStatus = 0 LIMIT 1");
+            mysqli_stmt_bind_param($stmt, "i", $room_type_id);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
+            $room = mysqli_fetch_assoc($result);
+
+            if (!$room) {
+                $error = __('public_not_available');
+            } elseif (empty($name) || empty($check_in) || empty($check_out)) {
+                $error = __('field_required');
+            } else {
+                mysqli_begin_transaction($connection);
+                $csql = "INSERT INTO customer (customer_name, contact_no, email, id_card_type_id, id_card_no, address) VALUES (?, ?, ?, 1, 'Pendiente', ?)";
+                $stmt_c = mysqli_prepare($connection, $csql);
+                $fullname = $name . ' ' . $last_name;
+                mysqli_stmt_bind_param($stmt_c, "ssss", $fullname, $contact_no, $email, $address);
+                $c_ok = mysqli_stmt_execute($stmt_c);
+
+                if ($c_ok) {
+                    $customer_id = mysqli_insert_id($connection);
+                    $stmt_t = mysqli_prepare($connection, "SELECT price FROM room_type WHERE room_type_id = ?");
+                    mysqli_stmt_bind_param($stmt_t, "i", $room_type_id);
+                    mysqli_stmt_execute($stmt_t);
+                    $t_result = mysqli_stmt_get_result($stmt_t);
+                    $type_data = mysqli_fetch_assoc($t_result);
+                    $d1 = new DateTime($check_in);
+                    $d2 = new DateTime($check_out);
+                    $nights = max(1, $d2->diff($d1)->days);
+                    $total_price = $type_data['price'] * $nights;
+
+                    $bsql = "INSERT INTO booking (customer_id, room_id, check_in, check_out, total_price, remaining_price, payment_status) VALUES (?, ?, ?, ?, ?, ?, 0)";
+                    $stmt_b = mysqli_prepare($connection, $bsql);
+                    mysqli_stmt_bind_param($stmt_b, "iissii", $customer_id, $room['room_id'], $check_in, $check_out, $total_price, $total_price);
+                    $b_ok = mysqli_stmt_execute($stmt_b);
+
+                    if ($b_ok) {
+                        $new_booking_id = mysqli_insert_id($connection);
+                        $inv_no = 'INV-' . str_pad($new_booking_id, 5, '0', STR_PAD_LEFT);
+                        $upd = mysqli_prepare($connection, "UPDATE booking SET invoice_no=? WHERE booking_id=?");
+                        mysqli_stmt_bind_param($upd, "si", $inv_no, $new_booking_id);
+                        mysqli_stmt_execute($upd);
+
+                        $rsql = "UPDATE room SET status = 1 WHERE room_id = ?";
+                        $stmt_r = mysqli_prepare($connection, $rsql);
+                        mysqli_stmt_bind_param($stmt_r, "i", $room['room_id']);
+                        mysqli_stmt_execute($stmt_r);
+                        mysqli_commit($connection);
+                        $success = true;
+                        $success_booking_id = $new_booking_id;
+                    } else {
+                        mysqli_rollback($connection);
+                        $error = __('public_booking_error');
+                    }
+                } else {
+                    mysqli_rollback($connection);
+                    $error = __('public_booking_error');
+                }
+            }
         }
     }
 }
@@ -99,9 +115,10 @@ include 'includes/header.php';
         <div class="booking-layout">
             <div class="booking-form-container">
                 <?php if ($error): ?>
-                <div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> <?php echo $error; ?></div>
+                <div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> <?php echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?></div>
                 <?php endif; ?>
                 <form method="post" class="booking-form">
+                    <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
                     <div class="form-row">
                         <div class="form-group">
                             <label><?php _e('public_rooms_label') ?> *</label>

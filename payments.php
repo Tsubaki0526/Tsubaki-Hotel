@@ -49,7 +49,7 @@
                                 <td><?php echo date('d/m/Y H:i', strtotime($p['payment_date'])); ?></td>
                                 <td><?php echo htmlspecialchars($p['notes'] ?: '-'); ?></td>
                                 <td>
-                                    <a href="invoice.php?booking_id=<?php echo $p['booking_id']; ?>" class="btn btn-info btn-sm" style="border-radius:60px;" title="<?php _e('payment_view_invoice') ?>">
+                                    <a href="invoice.php?booking_id=<?php echo htmlspecialchars($p['booking_id']); ?>" class="btn btn-info btn-sm" style="border-radius:60px;" title="<?php _e('payment_view_invoice') ?>">
                                         <i class="fa fa-file-text"></i>
                                     </a>
                                 </td>

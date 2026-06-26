@@ -93,7 +93,7 @@
                         if (mysqli_num_rows($complaint_result) > 0) {
                             $num = 0;
                             while ($complaint = mysqli_fetch_assoc($complaint_result)) {
-                                $num++
+                                $num++;
                                 ?>
                                 <tr>
                                     <td><?php echo $num ?></td>
@@ -103,13 +103,13 @@
                                     <td><?php echo date('M j, Y',strtotime($complaint['created_at'])) ?></td>
                                     <td>
                                         <?php if(!$complaint['resolve_status']){
-                                            echo '<button class="btn btn-info" data-bs-toggle="modal" style="border-radius:60px;" data-bs-target="#complaintModal" data-id="' . $complaint['id'] . '" id="complaint">' . __('complaint_resolve') . '</button>';
+                                            echo '<button class="btn btn-info" data-bs-toggle="modal" style="border-radius:60px;" data-bs-target="#complaintModal" data-id="' . htmlspecialchars($complaint['id']) . '" id="complaint">' . __('complaint_resolve') . '</button>';
                                         } else{
                                             echo date('M j, Y',strtotime($complaint['resolve_date']));
                                         }
                                         ?>
                                     </td>
-                                    <th><?php echo $complaint['budget'] ?></th>
+                                    <td><?php echo htmlspecialchars($complaint['budget']) ?></td>
 
 
                                 </tr>

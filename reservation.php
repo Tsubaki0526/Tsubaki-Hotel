@@ -44,7 +44,7 @@ if (isset($_GET['room_id'])){
                                     <label><?php _e('room_type') ?></label>
                                     <select class="form-control" id="room_type_booking" data-error="<?php _e('room_type_select') ?>" required>
                                         <option selected disabled><?php _e('room_type_select') ?></option>
-                                        <option selected value="<?php echo $get_room_type_id; ?>"><?php echo htmlspecialchars($get_room_type); ?></option>
+                                        <option selected value="<?php echo (int)$get_room_type_id; ?>"><?php echo htmlspecialchars($get_room_type); ?></option>
                                     </select>
                                     <div class="help-block with-errors"></div>
                                 </div>
@@ -53,7 +53,7 @@ if (isset($_GET['room_id'])){
                                     <label><?php _e('room_no') ?></label>
                                     <select class="form-control" id="room_no_booking" onchange="fetch_price(this.value)" required data-error="<?php _e('room_type_select') ?>">
                                         <option selected disabled><?php _e('room_no') ?></option>
-                                        <option selected value="<?php echo $get_room_id; ?>"><?php echo htmlspecialchars($get_room_no); ?></option>
+                                        <option selected value="<?php echo (int)$get_room_id; ?>"><?php echo htmlspecialchars($get_room_no); ?></option>
                                     </select>
                                     <div class="help-block with-errors"></div>
                                 </div>
@@ -72,7 +72,7 @@ if (isset($_GET['room_id'])){
 
                                 <div class="col-lg-12">
                                     <h4 style="font-weight: bold"><?php _e('reservation_total_days') ?> : <span id="staying_day_booking">0</span> <?php _e('reservation_days') ?></h4>
-                                    <h4 style="font-weight: bold"><?php _e('reservation_price') ?>: <span id="price_booking"><?php echo $get_room_price; ?></span> /-</h4>
+                                    <h4 style="font-weight: bold"><?php _e('reservation_price') ?>: <span id="price_booking"><?php echo htmlspecialchars($get_room_price); ?></span> /-</h4>
                                     <h4 style="font-weight: bold"><?php _e('reservation_total') ?> : <span id="total_price_booking">0</span> /-</h4>
                                 </div>
                             </div>
@@ -92,7 +92,7 @@ if (isset($_GET['room_id'])){
                                         $result = mysqli_query($connection,$query);
                                         if (mysqli_num_rows($result) > 0){
                                             while ($room_type = mysqli_fetch_assoc($result)){
-                                                echo '<option value="'.$room_type['room_type_id'].'">'.htmlspecialchars($room_type['room_type']).'</option>';
+                                                echo '<option value="'.(int)$room_type['room_type_id'].'">'.htmlspecialchars($room_type['room_type']).'</option>';
                                             }}
                                         ?>
                                     </select>
@@ -163,7 +163,7 @@ if (isset($_GET['room_id'])){
                                     $result = mysqli_query($connection,$query);
                                     if (mysqli_num_rows($result) > 0){
                                         while ($id_card_type = mysqli_fetch_assoc($result)){
-                                            echo '<option value="'.$id_card_type['id_card_type_id'].'">'.htmlspecialchars($id_card_type['id_card_type']).'</option>';
+                                            echo '<option value="'.(int)$id_card_type['id_card_type_id'].'">'.htmlspecialchars($id_card_type['id_card_type']).'</option>';
                                         }}
                                     ?>
                                 </select>

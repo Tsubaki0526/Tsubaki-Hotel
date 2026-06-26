@@ -5,7 +5,7 @@
  */
 
 if (!defined('APP_ENCRYPTION_KEY')) {
-    define('APP_ENCRYPTION_KEY', 'change-this-to-a-random-32-byte-hex-string');
+    trigger_error('APP_ENCRYPTION_KEY no está definida. Configura env.php con una clave de encriptación válida.', E_USER_ERROR);
 }
 if (!defined('APP_ENCRYPTION_CIPHER')) {
     define('APP_ENCRYPTION_CIPHER', 'aes-256-cbc');

@@ -60,10 +60,24 @@ document.addEventListener('DOMContentLoaded', function () {
     const forms = document.querySelectorAll('.booking-form, .contact-form form');
     forms.forEach(form => {
         form.addEventListener('submit', function (e) {
+            e.preventDefault();
             const btn = this.querySelector('button[type="submit"]');
             if (btn) {
+                const originalText = btn.innerHTML;
                 btn.disabled = true;
                 btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + (btn.getAttribute('data-loading') || 'Procesando...');
+
+                const formData = new FormData(this);
+                fetch(this.action, {
+                    method: this.method || 'POST',
+                    body: formData,
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.text();
+                })
+                .then(() => { this.submit(); })
+                .catch(() => { btn.disabled = false; btn.innerHTML = originalText; });
             }
         });
     });

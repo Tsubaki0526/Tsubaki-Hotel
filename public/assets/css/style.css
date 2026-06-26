@@ -966,7 +966,7 @@ img { max-width: 100%; height: auto; }
     position: fixed;
     bottom: 25px;
     right: 25px;
-    z-index: 9999;
+    z-index: 1040;
     background: #25D366;
     color: #fff;
     width: 60px;

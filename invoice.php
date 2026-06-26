@@ -127,7 +127,7 @@ $site_name = $settings['site_name'] ?? 'Hotel';
                 <p><?php echo htmlspecialchars($inv['address'] ?? ''); ?></p>
             </div>
             <div class="inv-status">
-                <div class="badge badge-<?php echo $status_class; ?>"><?php echo $status_text; ?></div>
+                <div class="badge badge-<?php echo in_array($status_class, ['paid','pending','partial']) ? $status_class : 'pending'; ?>"><?php echo $status_text; ?></div>
                 <p style="margin-top:10px;font-size:0.85rem;color:#888;">
                     <?php _e('invoice_emission') ?>: <?php echo date('d/m/Y H:i', strtotime($inv['booking_date'])); ?>
                 </p>

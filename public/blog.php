@@ -19,14 +19,14 @@ $posts = getBlogPosts(20);
         <div class="blog-grid">
             <?php foreach ($posts as $post): ?>
             <article class="blog-card">
-                <div class="blog-img" style="background: linear-gradient(135deg, <?php echo $post['color'] ?? '#1a5276'; ?>, <?php echo $post['color2'] ?? '#2980b9'; ?>);">
+                <div class="blog-img" style="background: linear-gradient(135deg, <?php echo htmlspecialchars($post['color'] ?? '#1a5276', ENT_QUOTES, 'UTF-8'); ?>, <?php echo htmlspecialchars($post['color2'] ?? '#2980b9', ENT_QUOTES, 'UTF-8'); ?>);">
                     <i class="fas fa-newspaper" style="font-size:3rem;color:rgba(255,255,255,0.3);"></i>
                 </div>
                 <div class="blog-body">
                     <span class="blog-date"><i class="far fa-calendar-alt"></i> <?php echo date('d M Y', strtotime($post['created_at'])); ?></span>
                     <h3><?php echo htmlspecialchars($post['title']); ?></h3>
                     <p><?php echo htmlspecialchars(substr($post['excerpt'], 0, 150)) . '...'; ?></p>
-                    <a href="entrada.php?slug=<?php echo $post['slug']; ?>" class="btn-link"><?php _e('public_read_more') ?> <i class="fas fa-arrow-right"></i></a>
+                    <a href="entrada.php?slug=<?php echo htmlspecialchars($post['slug'], ENT_QUOTES, 'UTF-8'); ?>" class="btn-link"><?php _e('public_read_more') ?> <i class="fas fa-arrow-right"></i></a>
                 </div>
             </article>
             <?php endforeach; ?>

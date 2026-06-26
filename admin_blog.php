@@ -39,21 +39,21 @@
                         $posts = getBlogPosts(100);
                         foreach ($posts as $p): ?>
                             <tr>
-                                <td><?php echo $p['id']; ?></td>
+                                <td><?php echo htmlspecialchars($p['id']); ?></td>
                                 <td><?php echo htmlspecialchars($p['title']); ?></td>
                                 <td><?php echo htmlspecialchars($p['slug']); ?></td>
                                 <td><?php echo date('d/m/Y', strtotime($p['created_at'])); ?></td>
                                 <td>
                                     <a href="#editBlogModal" class="btn btn-info" style="border-radius:60px;" data-bs-toggle="modal"
-                                       data-id="<?php echo $p['id']; ?>"
+                                       data-id="<?php echo htmlspecialchars($p['id']); ?>"
                                        data-title="<?php echo htmlspecialchars($p['title']); ?>"
                                        data-slug="<?php echo htmlspecialchars($p['slug']); ?>"
                                        data-excerpt="<?php echo htmlspecialchars($p['excerpt']); ?>"
                                        data-content="<?php echo htmlspecialchars($p['content']); ?>"
-                                       data-color="<?php echo $p['color']; ?>"
-                                       data-color2="<?php echo $p['color2']; ?>"
+                                       data-color="<?php echo htmlspecialchars($p['color']); ?>"
+                                       data-color2="<?php echo htmlspecialchars($p['color2']); ?>"
                                        id="editBlogBtn"><i class="fa fa-pencil"></i></a>
-                                    <a href="ajax.php?delete_blog=<?php echo $p['id']; ?>&csrf=<?php echo csrf_token(); ?>" class="btn btn-danger" style="border-radius:60px;" onclick="return confirm('<?php _e('confirm_delete'); ?>')"><i class="fa fa-trash"></i></a>
+                                    <a href="ajax.php?delete_blog=<?php echo htmlspecialchars($p['id']); ?>&csrf=<?php echo csrf_token(); ?>" class="btn btn-danger" style="border-radius:60px;" onclick="return confirm('<?php _e('confirm_delete'); ?>')"><i class="fa fa-trash"></i></a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

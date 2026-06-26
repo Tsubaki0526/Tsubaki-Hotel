@@ -1,5 +1,4 @@
 <?php
-session_start();
 include_once 'db.php';
 lang_init();
 
@@ -38,8 +37,11 @@ if (isset($_GET['empid'])) {
         header('Location:login.php');
         exit;
     }
-    require_csrf();
-    $emp_id = $_GET['empid'];
+    if (!isset($_GET['csrf']) || !verify_csrf($_GET['csrf'])) {
+        header('Location:login.php?error=csrf');
+        exit;
+    }
+    $emp_id = intval($_GET['empid']);
     $stmt = mysqli_prepare($connection, "DELETE FROM staff WHERE emp_id=?");
     mysqli_stmt_bind_param($stmt, "i", $emp_id);
     if (mysqli_stmt_execute($stmt)) {

@@ -38,7 +38,7 @@ if (!$event || ($event['type'] ?? '') !== 'checkout.session.completed') {
 $session = $event['data']['object'] ?? [];
 $booking_id = intval($session['metadata']['booking_id'] ?? 0);
 $amount_paid = ($session['amount_total'] ?? 0) / 100;
-$payment_intent = $session['payment_intent'] ?? '';
+$payment_intent = preg_replace('/[^a-zA-Z0-9_]/', '', $session['payment_intent'] ?? '');
 
 if ($booking_id <= 0 || $amount_paid <= 0) {
     http_response_code(200);
@@ -49,7 +49,9 @@ if ($booking_id <= 0 || $amount_paid <= 0) {
 $stmt = mysqli_prepare($connection, "SELECT remaining_price, total_price, payment_status FROM booking WHERE booking_id=?");
 mysqli_stmt_bind_param($stmt, "i", $booking_id);
 mysqli_stmt_execute($stmt);
-$b = mysqli_stmt_get_result($stmt)->fetch_assoc();
+$b = mysqli_stmt_get_result($stmt);
+mysqli_stmt_close($stmt);
+$b = $b->fetch_assoc();
 if (!$b) {
     http_response_code(200);
     echo "Booking not found";
@@ -61,6 +63,20 @@ $paid_full = ($new_remaining <= 0) ? 1 : 0;
 $notes = 'Stripe Webhook PI: ' . $payment_intent;
 
 mysqli_begin_transaction($connection);
+
+$chk = mysqli_prepare($connection, "SELECT payment_id FROM payments WHERE notes LIKE ?");
+$chk_note = '%' . $payment_intent . '%';
+mysqli_stmt_bind_param($chk, "s", $chk_note);
+mysqli_stmt_execute($chk);
+$chk_result = mysqli_stmt_get_result($chk);
+mysqli_stmt_close($chk);
+if ($chk_result && mysqli_fetch_assoc($chk_result)) {
+    mysqli_rollback($connection);
+    http_response_code(200);
+    echo "Duplicate payment";
+    exit;
+}
+
 $pst = mysqli_prepare($connection, "INSERT INTO payments (booking_id, amount, payment_method, notes) VALUES (?, ?, 'Stripe', ?)");
 mysqli_stmt_bind_param($pst, "ids", $booking_id, $amount_paid, $notes);
 $ok1 = mysqli_stmt_execute($pst);

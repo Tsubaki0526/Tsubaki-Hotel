@@ -11,7 +11,7 @@ require_once 'lib/mercadopago_helper.php';
 $input = json_decode(file_get_contents('php://input'), true);
 
 // MercadoPago IPN can send data via POST query params too
-$payment_id = $_GET['id'] ?? $input['data']['id'] ?? $input['id'] ?? 0;
+$payment_id = intval($_GET['id'] ?? $input['data']['id'] ?? $input['id'] ?? 0);
 $topic = $_GET['topic'] ?? $input['type'] ?? '';
 
 // Verify x-signature if present (defense in depth)
@@ -48,14 +48,14 @@ if (!$payment_id && $topic === 'payment') {
 $payment = mpApiCall("/v1/payments/$payment_id", null, 'GET');
 if (isset($payment['error'])) {
     http_response_code(200);
-    echo "Payment not found: " . $payment['error'];
+    echo "Payment not found: " . htmlspecialchars($payment['error'], ENT_QUOTES, 'UTF-8');
     exit;
 }
 
 $status = $payment['status'] ?? '';
 if ($status !== 'approved') {
     http_response_code(200);
-    echo "Status: $status (not approved)";
+    echo "Status: " . htmlspecialchars($status, ENT_QUOTES, 'UTF-8') . " (not approved)";
     exit;
 }
 
@@ -78,7 +78,9 @@ if ($booking_id <= 0 || $amount_paid <= 0) {
 $stmt = mysqli_prepare($connection, "SELECT remaining_price, payment_status FROM booking WHERE booking_id=?");
 mysqli_stmt_bind_param($stmt, "i", $booking_id);
 mysqli_stmt_execute($stmt);
-$b = mysqli_stmt_get_result($stmt)->fetch_assoc();
+$b = mysqli_stmt_get_result($stmt);
+mysqli_stmt_close($stmt);
+$b = $b->fetch_assoc();
 if (!$b) { echo "Booking not found"; exit; }
 
 $new_remaining = max(0, $b['remaining_price'] - $amount_paid);
@@ -86,6 +88,20 @@ $paid_full = ($new_remaining <= 0) ? 1 : 0;
 $notes = 'MP ID: ' . $payment_id . ' (' . ($payment['payment_method_id'] ?? '') . ')';
 
 mysqli_begin_transaction($connection);
+
+$chk = mysqli_prepare($connection, "SELECT payment_id FROM payments WHERE notes LIKE ?");
+$chk_note = '%MP ID: ' . $payment_id . '%';
+mysqli_stmt_bind_param($chk, "s", $chk_note);
+mysqli_stmt_execute($chk);
+$chk_result = mysqli_stmt_get_result($chk);
+mysqli_stmt_close($chk);
+if ($chk_result && mysqli_fetch_assoc($chk_result)) {
+    mysqli_rollback($connection);
+    http_response_code(200);
+    echo "Duplicate payment";
+    exit;
+}
+
 $pst = mysqli_prepare($connection, "INSERT INTO payments (booking_id, amount, payment_method, notes) VALUES (?, ?, ?, ?)");
 mysqli_stmt_bind_param($pst, "ids", $booking_id, $amount_paid, $method_name, $notes);
 $ok1 = mysqli_stmt_execute($pst);

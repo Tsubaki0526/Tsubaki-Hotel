@@ -34,7 +34,7 @@
                     $employee = mysqli_fetch_assoc($emp_result);
                     ?>
                     <p><b><?php _e('emp_history_name') ?>: </b> <?php echo htmlspecialchars($employee['emp_name']); ?></p>
-                    <p><b><?php _e('emp_history_salary') ?>: </b> <?php echo $employee['salary'].'/-'; ?></p>
+                    <p><b><?php _e('emp_history_salary') ?>: </b> <?php echo htmlspecialchars($employee['salary']).'/-'; ?></p>
                     <div class="table-responsive"><table class="table table-striped table-bordered" cellspacing="0" width="100%"
                            id="rooms">
                         <thead>
